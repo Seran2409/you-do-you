@@ -1,0 +1,633 @@
+{
+  "app": {
+    "name": "You Do You",
+    "loading": "Lädt",
+    "tagline": "To-dos, Routinen und Meditation in deinem Tempo"
+  },
+  "common": {
+    "save": "Speichern",
+    "create": "Anlegen",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "keep": "Behalten",
+    "close": "Schließen",
+    "edit": "Bearbeiten",
+    "continue": "Weiter",
+    "and": "und",
+    "less": "Weniger",
+    "more": "Mehr"
+  },
+  "tabs": {
+    "label": "Bereiche",
+    "home": "Start",
+    "todos": "To-Dos",
+    "routines": "Routinen",
+    "level": "Level",
+    "meditate": "Meditation"
+  },
+  "top": {
+    "stat_one": "Streak {{count}} Tag, Level {{level}}",
+    "stat_other": "Streak {{count}} Tage, Level {{level}}",
+    "settings": "Einstellungen"
+  },
+  "day": {
+    "today": "Heute",
+    "yesterday": "Gestern",
+    "tomorrow": "Morgen"
+  },
+  "diff": {
+    "1": "Leicht",
+    "2": "Mittel",
+    "3": "Schwer",
+    "label": "Schwierigkeit: {{level}}"
+  },
+  "greeting": {
+    "morning": "Moin!",
+    "morning_name": "Moin, {{name}}",
+    "morning_sub": "Ganz in Ruhe ankommen, dann loslegen.",
+    "midday": "Hey!",
+    "midday_name": "Hey {{name}}",
+    "midday_sub": "Schön, dass du da bist.",
+    "afternoon": "Hey!",
+    "afternoon_name": "Hey {{name}}",
+    "afternoon_sub": "Wie läuft dein Tag bisher?",
+    "evening": "Schönen Abend!",
+    "evening_name": "Schönen Abend, {{name}}",
+    "evening_sub": "Noch ein, zwei Haken, dann Feierabend.",
+    "night": "Noch wach?",
+    "night_name": "Noch wach, {{name}}?",
+    "night_sub": "Mach langsam. Morgen ist auch noch ein Tag."
+  },
+  "quote": {
+    "label": "Spruch des Tages",
+    "number": "Nr. {{n}}"
+  },
+  "start": {
+    "today": "Heute",
+    "allTodos": "Alle To-dos",
+    "waiting_one": "To-do wartet heute auf dich",
+    "waiting_other": "To-dos warten heute auf dich",
+    "more": "Dazu {{list}}.",
+    "moreWeek_one": "{{count}} diese Woche",
+    "moreWeek_other": "{{count}} diese Woche",
+    "moreMonth_one": "{{count}} diesen Monat",
+    "moreMonth_other": "{{count}} diesen Monat",
+    "moreYear_one": "{{count}} dieses Jahr",
+    "moreYear_other": "{{count}} dieses Jahr",
+    "andMore_one": "und {{count}} weiteres",
+    "andMore_other": "und {{count}} weitere",
+    "nothingLeft": "Heute wartet nichts mehr auf dich.",
+    "enjoy": "Genieß den Moment.",
+    "noTodos": "Noch keine To-dos",
+    "noTodosSub": "Jeder Haken bringt XP und hält deine Streak am Leben.",
+    "firstTodo": "Erstes To-do",
+    "goalReached": "Tagesziel geschafft. Stark.",
+    "goal_one": "Tagesziel: {{count}} Routine",
+    "goal_other": "Tagesziel: {{count}} Routinen",
+    "goalBonusDone": "+{{xp}} XP Bonus ist eingesammelt.",
+    "goalRemaining": "Noch {{count}} bis zum Bonus von +{{xp}} XP.",
+    "allRoutines": "Alle Routinen",
+    "ringRoutines": "Routinen",
+    "level": "Level",
+    "details": "Details",
+    "playerSub_one": "Noch {{left}} XP bis Level {{next}} · heute +{{today}} XP · Streak {{count}} Tag",
+    "playerSub_other": "Noch {{left}} XP bis Level {{next}} · heute +{{today}} XP · Streak {{count}} Tage"
+  },
+  "hints": {
+    "overdue_one": "<b>{{count}} Tages-To-do</b> von früheren Tagen ist noch offen.",
+    "overdue_other": "<b>{{count}} Tages-To-dos</b> von früheren Tagen sind noch offen.",
+    "overdueAction": "Auf heute holen",
+    "routineTight_one": "{{emoji}} <b>{{title}}</b>: noch {{remaining}}× in {{count}} Tag. Jetzt wird es knapp.",
+    "routineTight_other": "{{emoji}} <b>{{title}}</b>: noch {{remaining}}× in {{count}} Tagen. Jetzt wird es knapp.",
+    "routineOpen": {
+      "woche": "{{emoji}} <b>{{title}}</b>: noch {{remaining}}× diese Woche.",
+      "monat": "{{emoji}} <b>{{title}}</b>: noch {{remaining}}× diesen Monat.",
+      "jahr": "{{emoji}} <b>{{title}}</b>: noch {{remaining}}× dieses Jahr."
+    },
+    "listEnding_one": "Nur noch {{count}} Tag: <b>{{what}}</b> offen.",
+    "listEnding_other": "Nur noch {{count}} Tage: <b>{{what}}</b> offen.",
+    "what": {
+      "woche_one": "{{count}} Wochen-To-do",
+      "woche_other": "{{count}} Wochen-To-dos",
+      "monat_one": "{{count}} Monats-To-do",
+      "monat_other": "{{count}} Monats-To-dos",
+      "jahr_one": "{{count}} Jahres-To-do",
+      "jahr_other": "{{count}} Jahres-To-dos"
+    }
+  },
+  "todos": {
+    "title": "To-Dos",
+    "pickList": "Liste wählen",
+    "tab": {
+      "aktuell": "Aktuell",
+      "woche": "Woche",
+      "monat": "Monat",
+      "jahr": "Jahr"
+    },
+    "listName": {
+      "aktuell": "Aktuell",
+      "woche": "Wochen-To-dos",
+      "monat": "Monats-To-dos",
+      "jahr": "Jahres-To-dos"
+    },
+    "nowIntro": "Alles, was gerade ansteht: To-dos ohne Datum und deine To-dos für heute.",
+    "prevPeriod": "Vorheriger Zeitraum",
+    "nextPeriod": "Nächster Zeitraum",
+    "current_one": "aktuell · noch {{count}} Tag",
+    "current_other": "aktuell · noch {{count}} Tage",
+    "backToNow": "Zurück zu jetzt",
+    "week": "KW {{week}}",
+    "weekRange": "KW {{week}} · {{from}}–{{to}}",
+    "emptyNow": "Hier landet alles, was ansteht: ohne Datum oder nur für heute. Kein Stress, einfach abhaken.",
+    "emptyPeriod": "Noch nichts geplant für diesen Zeitraum. Teile große Ziele in Unterpunkte, dann siehst du den Fortschritt wachsen.",
+    "newTodo": "To-do anlegen",
+    "progressAll": "Alles geschafft",
+    "progressIn": "geschafft in {{list}}",
+    "progressSummary": "{{done}} von {{total}} To-dos erledigt",
+    "subsSummary": "{{done}}/{{total}} Unterpunkte",
+    "allDoneList": "Alles erledigt in dieser Liste. Gönn dir den Moment.",
+    "planned": "Geplant ({{count}})",
+    "done": "Erledigt ({{count}})",
+    "doneOn": "erledigt {{when}}",
+    "overdue": "überfällig",
+    "noDate": "Ohne Datum",
+    "addSub": "Unterpunkt hinzufügen",
+    "addSubTo": "Unterpunkt zu {{title}} hinzufügen",
+    "options": "Optionen für {{title}}",
+    "check": "{{title}} erledigt",
+    "fab": "To-do",
+    "fabLabel": "Neues To-do"
+  },
+  "todoForm": {
+    "newTitle": "Neues To-do",
+    "editTitle": "To-do bearbeiten",
+    "what": "Was steht an?",
+    "placeholder": "z. B. Steuererklärung abschicken",
+    "list": "Liste",
+    "due": "Fällig",
+    "period": "Zeitraum",
+    "earlier": "Früher",
+    "later": "Später",
+    "difficulty": "Schwierigkeit",
+    "subs": "Unterpunkte",
+    "subsHint": "je +{{xp}} XP, ergeben den Fortschrittsbalken",
+    "removeSub": "Unterpunkt entfernen",
+    "newSub": "Neuer Unterpunkt",
+    "errTitle": "Gib dem To-do einen Namen."
+  },
+  "menu": {
+    "moveTo": {
+      "tag": "Auf heute verschieben",
+      "woche": "In diese Woche verschieben",
+      "monat": "In diesen Monat verschieben",
+      "jahr": "In dieses Jahr verschieben"
+    }
+  },
+  "confirm": {
+    "title": "„{{title}}“ löschen?",
+    "todoKeepsXp": "Die XP, die du dafür bekommen hast, bleiben dir erhalten.",
+    "irreversible": "Das lässt sich nicht rückgängig machen.",
+    "routine": "Dein Verlauf und deine XP bleiben erhalten, die Routine verschwindet aus der Liste.",
+    "label": "Löschen bestätigen"
+  },
+  "toast": {
+    "saved": "Gespeichert",
+    "todoCreated": "To-do angelegt",
+    "plannedFor": "Geplant für {{when}}",
+    "moved": "Verschoben",
+    "movedToday_one": "{{count}} To-do auf heute geholt",
+    "movedToday_other": "{{count}} To-dos auf heute geholt",
+    "todoDeleted": "To-do gelöscht",
+    "routineCreated": "Routine angelegt",
+    "routineDeleted": "Routine gelöscht",
+    "badge": "Abzeichen freigeschaltet: {{name}}",
+    "xp": "+{{xp}} XP",
+    "exported": "Daten exportiert",
+    "imported": "Daten importiert",
+    "importError": "Die Datei passt nicht. Erwartet wird ein Export von You Do You.",
+    "saveError": "Speichern hat nicht geklappt. Versuch es bitte noch einmal.",
+    "deletedAll": "Alle Daten gelöscht"
+  },
+  "routines": {
+    "title": "Routinen",
+    "pickScope": "Rhythmus wählen",
+    "scope": {
+      "tag": "Tag",
+      "woche": "Woche",
+      "monat": "Monat",
+      "jahr": "Jahr"
+    },
+    "per": {
+      "tag": "am Tag",
+      "woche": "pro Woche",
+      "monat": "im Monat",
+      "jahr": "im Jahr"
+    },
+    "goalTitle": "Tagesziel",
+    "goalText": "So viele Routinen willst du pro Tag schaffen. Erreicht gibt es +{{xp}} XP.",
+    "goalDec": "Tagesziel verringern",
+    "goalInc": "Tagesziel erhöhen",
+    "ringToday": "heute",
+    "nowName": {
+      "tag": "Heute",
+      "woche": "Diese Woche",
+      "monat": "Dieser Monat",
+      "jahr": "Dieses Jahr"
+    },
+    "prevName": {
+      "tag": "Gestern",
+      "woche": "Letzte Woche",
+      "monat": "Letzter Monat",
+      "jahr": "Letztes Jahr"
+    },
+    "summary": "{{name}}: {{met}} von {{total}} erfüllt",
+    "lookback": "Rückblick: {{name}} {{met}} von {{total}} erfüllt",
+    "daysLeft_one": "noch {{count}} Tag",
+    "daysLeft_other": "noch {{count}} Tage",
+    "empty": {
+      "tag": "Noch keine Tagesroutinen",
+      "woche": "Noch keine Wochenroutinen",
+      "monat": "Noch keine Monatsroutinen",
+      "jahr": "Noch keine Jahresroutinen"
+    },
+    "emptyText": "Lege fest, wie oft du etwas schaffen willst. Zum Beispiel dreimal pro Woche laufen oder einmal im Monat die Fußnägel schneiden. Tippe auf einen Vorschlag oder leg eine eigene Routine an.",
+    "suggestion": "{{emoji}} {{title}} · {{target}}× {{per}}",
+    "met": "Erfüllt",
+    "metTimes": "Erfüllt, {{count}}×",
+    "status": "{{target}}× {{per}} · noch {{remaining}}×",
+    "statusDays_one": "{{target}}× {{per}} · noch {{remaining}}× in {{count}} Tag",
+    "statusDays_other": "{{target}}× {{per}} · noch {{remaining}}× in {{count}} Tagen",
+    "undo": "Letzten Eintrag zurücknehmen",
+    "inc": "{{title}} geschafft, plus {{xp}} XP",
+    "progress": "{{count}} von {{target}}",
+    "lookbackTitle": "Rückblick",
+    "hits": {
+      "tag": "{{hits}} von 6 Tagen erfüllt",
+      "woche": "{{hits}} von 6 Wochen erfüllt",
+      "monat": "{{hits}} von 6 Monaten erfüllt",
+      "jahr": "{{hits}} von 6 Jahren erfüllt"
+    },
+    "inRow": "{{count}} in Folge",
+    "xpInfo": "+{{xp}} XP je Mal, +{{bonus}} XP wenn das Ziel steht",
+    "fab": "Routine",
+    "fabLabel": "Neue Routine",
+    "suggest": {
+      "run": "Laufen gehen",
+      "toenails": "Fußnägel schneiden",
+      "water": "Wasser trinken (Glas)",
+      "read": "Lesen",
+      "tidy": "Wohnung aufräumen",
+      "dentist": "Zahnarzt-Kontrolle"
+    },
+    "slot": {
+      "any": "Jederzeit",
+      "morning": "Morgens",
+      "midday": "Mittags",
+      "evening": "Abends",
+      "now": "jetzt"
+    }
+  },
+  "routineForm": {
+    "newTitle": "Neue Routine",
+    "editTitle": "Routine bearbeiten",
+    "what": "Was willst du regelmäßig tun?",
+    "placeholder": "z. B. Laufen gehen",
+    "symbol": "Symbol",
+    "rhythm": "Rhythmus",
+    "target": "Ziel",
+    "targetValue": "{{count}}× {{per}}",
+    "xpInfo": "+{{xp}} XP je Mal, +{{bonus}} XP Bonus, wenn das Ziel {{when}} steht.",
+    "when": {
+      "tag": "am Tag",
+      "woche": "in der Woche",
+      "monat": "im Monat",
+      "jahr": "im Jahr"
+    },
+    "errTitle": "Gib der Routine einen Namen.",
+    "slot": "Tageszeit"
+  },
+  "level": {
+    "total": "Level {{level}} · {{xp}} XP gesamt",
+    "progress": "{{into}} / {{need}} XP · noch {{left}} bis Level {{next}} ({{title}})",
+    "progressLabel": "Fortschritt bis Level {{level}}",
+    "streakTile_one": "Tag Streak · Rekord {{best}}",
+    "streakTile_other": "Tage Streak · Rekord {{best}}",
+    "perfectTile": "perfekte Tage (Tagesziel)",
+    "todosTile_one": "To-dos erledigt · {{count}} Unterpunkt",
+    "todosTile_other": "To-dos erledigt · {{count}} Unterpunkte",
+    "routinesTile": "Routinen geschafft",
+    "heatTitle": "Deine letzten 18 Wochen",
+    "heatLabel": "XP pro Tag der letzten 18 Wochen",
+    "heatLegend": "wenig · viel XP",
+    "heatToday": "heute",
+    "badges": "Abzeichen",
+    "rulesTitle": "So gibt es XP",
+    "rules": {
+      "todoA": "To-do heute · ohne Datum · Woche",
+      "todoB": "To-do Monat · Jahr",
+      "diff": "Schwierigkeit mittel · schwer",
+      "diffValue": "×1,5 · ×2",
+      "sub": "Unterpunkt",
+      "routine": "Routine Tag · Woche · Monat · Jahr",
+      "routineGoal": "Routinen-Ziel im Zeitraum erreicht",
+      "routineGoalValue": "+5 bis +100",
+      "dailyGoal": "Tagesziel erreicht",
+      "meditation": "Meditation, pro Minute",
+      "mindfulGoal": "Achtsame Minuten: Tagesziel erreicht"
+    },
+    "upEyebrow": "Level-Up",
+    "upTitle": "Level {{level}}",
+    "upText": "Neuer Titel: <b>{{title}}</b>. Du wächst, Schritt für Schritt.",
+    "mindfulTile": "achtsame Minuten",
+    "medBestTile_one": "Tag Meditation am Stück (Rekord)",
+    "medBestTile_other": "Tage Meditation am Stück (Rekord)"
+  },
+  "titles": {
+    "rookie": "Samenkorn",
+    "tracker": "Keimling",
+    "goGetter": "Sprössling",
+    "sureFooted": "Knospe",
+    "pathfinder": "Blüte",
+    "summitSeeker": "Sonnenblume",
+    "trailblazer": "Lichtblick",
+    "pioneer": "Sonnenstrahl",
+    "unshakable": "Ruhepol",
+    "legend": "Leuchtturm"
+  },
+  "badges": {
+    "first": {
+      "name": "Erster Schritt",
+      "desc": "Erstes To-do erledigt"
+    },
+    "subs25": {
+      "name": "Kleinkram-Profi",
+      "desc": "25 Unterpunkte abgehakt"
+    },
+    "todo50": {
+      "name": "Abhak-Maschine",
+      "desc": "50 To-dos erledigt"
+    },
+    "st3": {
+      "name": "Funke",
+      "desc": "3 Tage am Stück aktiv"
+    },
+    "st7": {
+      "name": "Lagerfeuer",
+      "desc": "7 Tage am Stück aktiv"
+    },
+    "st30": {
+      "name": "Flächenbrand",
+      "desc": "30 Tage am Stück aktiv"
+    },
+    "perfect": {
+      "name": "Perfekter Tag",
+      "desc": "Tagesziel bei Routinen erreicht"
+    },
+    "perfect7": {
+      "name": "Sieben Volltreffer",
+      "desc": "7 perfekte Tage gesammelt"
+    },
+    "week": {
+      "name": "Wochensieger",
+      "desc": "Eine Wochenroutine voll erfüllt"
+    },
+    "month": {
+      "name": "Monatsheld",
+      "desc": "Eine Monatsroutine erfüllt"
+    },
+    "year": {
+      "name": "Weitblick",
+      "desc": "Ein Jahres-To-do erledigt"
+    },
+    "lv5": {
+      "name": "Pfadfinder",
+      "desc": "Level 5 erreicht"
+    },
+    "lv10": {
+      "name": "Unaufhaltsam",
+      "desc": "Level 10 erreicht"
+    },
+    "xp1000": {
+      "name": "Tausender",
+      "desc": "1.000 XP gesammelt"
+    },
+    "calm1": {
+      "name": "Erster Atemzug",
+      "desc": "Erste Meditation beendet"
+    },
+    "calm100": {
+      "name": "Stille Stunden",
+      "desc": "100 achtsame Minuten gesammelt"
+    },
+    "calm7": {
+      "name": "Sieben Sonnenaufgänge",
+      "desc": "7 Tage am Stück meditiert"
+    },
+    "deep20": {
+      "name": "Tiefenentspannt",
+      "desc": "Eine Meditation ab 20 Minuten"
+    }
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "name": "Wie dürfen wir dich nennen?",
+    "namePlaceholder": "Dein Vorname",
+    "language": "Sprache",
+    "langSystem": "System",
+    "langDe": "Deutsch",
+    "langEn": "English",
+    "theme": "Darstellung",
+    "themeSystem": "System",
+    "themeLight": "Hell",
+    "themeDark": "Dunkel",
+    "goal": "Tagesziel Routinen",
+    "goalValue_one": "{{count}} pro Tag",
+    "goalValue_other": "{{count}} pro Tag",
+    "data": "Deine Daten",
+    "localNote": "Deine Daten liegen nur auf diesem Gerät. Exportiere ab und zu eine Sicherung.",
+    "export": "Exportieren",
+    "import": "Importieren",
+    "importTitle": "Daten importieren?",
+    "importText": "Der Import ersetzt alle To-dos, Routinen und Einträge auf diesem Gerät.",
+    "importText2": "In der Datei: {{todos}} To-dos, {{routines}} Routinen, {{days}} Tage.",
+    "importConfirm": "Importieren",
+    "pastePlaceholder": "Oder den Inhalt der JSON-Datei hier einfügen",
+    "pickFile": "Datei wählen",
+    "check": "Prüfen",
+    "profile": "Profil",
+    "game": "Spiel",
+    "reminders": "Erinnerungen",
+    "morningReminder": "Morgens erinnern",
+    "morningText": "Kurzbilanz von gestern und was heute ansteht.",
+    "eveningReminder": "Abends erinnern",
+    "eveningText": "Nur wenn dein Tagesziel noch offen ist.",
+    "time": "Uhrzeit",
+    "remindersWeb": "Erinnerungen gibt es in der App für Android und iOS.",
+    "permissionDenied": "Benachrichtigungen sind in den Systemeinstellungen ausgeschaltet.",
+    "deleteAll": "Alle Daten löschen",
+    "deleteAllTitle": "Alle Daten löschen?",
+    "deleteAllText": "Alle To-dos, Routinen, Einträge und Einstellungen auf diesem Gerät werden gelöscht. Das lässt sich nicht rückgängig machen. Exportiere vorher eine Sicherung, wenn du sie behalten willst.",
+    "legal": "Rechtliches",
+    "privacy": "Datenschutz",
+    "terms": "Nutzungsbedingungen (AGB)",
+    "imprint": "Impressum",
+    "support": "Hilfe und Kontakt",
+    "version": "Version {{version}}",
+    "mindfulGoal": "Achtsame Minuten pro Tag",
+    "mindfulGoalValue_one": "{{count}} Minute pro Tag",
+    "mindfulGoalValue_other": "{{count}} Minuten pro Tag",
+    "mindfulReminder": "Achtsamkeits-Pause",
+    "mindfulReminderText": "Eine sanfte Erinnerung an ein paar ruhige Minuten, solange dein Tagesziel offen ist."
+  },
+  "welcome": {
+    "title": "Schön, dass du da bist.",
+    "text": "Hier darfst du in deinem Tempo wachsen. Kurz erklärt:",
+    "p1": "Abhaken bringt XP",
+    "p1Text": "Jedes To-do und jeder Unterpunkt zählt. Mit XP steigst du im Level auf.",
+    "p2": "Routinen halten deine Streak",
+    "p2Text": "Leg fest, wie oft du etwas schaffen willst, und tippe +1.",
+    "p3": "Abzeichen und ein Spruch pro Tag",
+    "p3Text": "Für Meilensteine gibt es Abzeichen, jeden Morgen einen neuen Spruch.",
+    "remind": "Morgens an heute erinnern",
+    "start": "Los geht's",
+    "p4": "Meditieren mit Timer",
+    "p4Text": "Wähle eine Zeit, atme mit, und sammle ruhige Minuten."
+  },
+  "notify": {
+    "channel": "Erinnerungen",
+    "doneTitle_one": "Gestern {{count}} geschafft, heute geht mehr",
+    "doneTitle_other": "Gestern {{count}} geschafft, heute geht mehr",
+    "newDayTitle": "Neuer Tag, neue Chance",
+    "openBody_one": "{{count}} To-do wartet heute auf dich.",
+    "openBody_other": "{{count}} To-dos warten heute auf dich.",
+    "noneOpenBody": "Heute ist noch alles frei. Zeit für eine Routine?",
+    "eveningTitle": "Dein Tagesziel wartet",
+    "eveningBody_one": "Noch {{count}} Routine bis +{{xp}} XP.",
+    "eveningBody_other": "Noch {{count}} Routinen bis +{{xp}} XP.",
+    "mindfulTitle": "Zeit für eine kleine Pause",
+    "mindfulBody": "Ein paar ruhige Atemzüge tun dir gut. Drei Minuten reichen schon."
+  },
+  "meditate": {
+    "title": "Meditation",
+    "subtitle": "Ein Moment nur für dich.",
+    "minShort": "Min.",
+    "goalTitle": "Achtsame Minuten heute",
+    "goalReached": "Tagesziel erreicht. Wunderbar.",
+    "goalBonusDone": "+{{xp}} XP Bonus ist eingesammelt.",
+    "goalRemaining_one": "Noch {{count}} Minute bis +{{xp}} XP.",
+    "goalRemaining_other": "Noch {{count}} Minuten bis +{{xp}} XP.",
+    "goalDec": "Ziel verringern",
+    "goalInc": "Ziel erhöhen",
+    "quick": "3 Min. atmen",
+    "minutes_one": "{{count}} Minute",
+    "minutes_other": "{{count}} Minuten",
+    "breathing": "Atemrhythmus",
+    "pattern": {
+      "free": "Frei",
+      "calm": "Ruhig",
+      "box": "Box"
+    },
+    "patternHint": {
+      "free": "Ohne Vorgabe. Atme ganz natürlich.",
+      "calm": "4 Sekunden ein, 6 Sekunden aus. Das beruhigt spürbar.",
+      "box": "Je 4 Sekunden ein, halten, aus, halten."
+    },
+    "start": "Meditieren",
+    "bell": "Gong",
+    "bellText": "Ein sanfter Klang am Anfang und am Ende.",
+    "dnd": "Nicht stören",
+    "dndText": {
+      "system": "Während der Meditation kommen keine Benachrichtigungen, nur Wecker.",
+      "ios-hint": "Das iPhone lässt Apps das nicht selbst einschalten. Tipp: Fokus „Nicht stören“ im Kontrollzentrum aktivieren. Unsere Erinnerungen pausieren automatisch.",
+      "none": "Im Browser nicht möglich. In der App für Android schaltet sie „Nicht stören“ selbst ein."
+    },
+    "dndAccessText": "Dafür braucht die App einmalig Zugriff auf „Bitte nicht stören“.",
+    "dndAccess": "Zugriff erlauben",
+    "statsTitle": "Deine Ruhe",
+    "statMinutes": "Minuten gesamt",
+    "statSessions": "Sitzungen",
+    "statStreak_one": "Tag in Folge",
+    "statStreak_other": "Tage in Folge",
+    "avgMood": "So fühlst du dich danach im Schnitt: {{mood}}",
+    "empty": "Noch keine Sitzung. Fang doch mit drei Minuten an.",
+    "breath": {
+      "in": "Einatmen",
+      "hold": "Halten",
+      "out": "Ausatmen",
+      "rest": "Pause",
+      "free": "Atme ganz ruhig"
+    },
+    "endTitle": "Meditation beendet",
+    "endBody": "Schön gemacht. Öffne die App für deine XP.",
+    "remaining": "Noch {{time}}",
+    "paused": "Pausiert",
+    "pause": "Pausieren",
+    "resume": "Weiter",
+    "end": "Beenden",
+    "doneTitle": "Schön, dass du dir die Zeit genommen hast.",
+    "endedTitle": "Jede Minute zählt.",
+    "doneText_one": "{{count}} Minute Ruhe · +{{xp}} XP",
+    "doneText_other": "{{count}} Minuten Ruhe · +{{xp}} XP",
+    "moodQuestion": "Wie fühlst du dich jetzt?",
+    "mood": {
+      "1": "Angespannt",
+      "2": "Etwas unruhig",
+      "3": "Neutral",
+      "4": "Ruhig",
+      "5": "Richtig gut"
+    },
+    "tooShortTitle": "Fast geschafft",
+    "tooShortText": "Ab einer Minute zählt es. Magst du es gleich noch einmal versuchen?",
+    "back": "Zurück"
+  },
+  "quotes": [
+    "Du musst heute nicht alles schaffen. Ein Schritt reicht.",
+    "Sei freundlich zu dir. Du gibst dein Bestes.",
+    "Langsam ist auch ein Tempo.",
+    "Was heute nicht klappt, darf morgen klappen.",
+    "Ein ruhiger Atemzug ist schon ein Anfang.",
+    "Du darfst stolz sein auf das, was du schon geschafft hast.",
+    "Kleine Schritte, warme Gedanken.",
+    "Pausen gehören zum Weg dazu.",
+    "Dein Tempo ist das richtige.",
+    "Heute zählt, was dir guttut.",
+    "Fang da an, wo du gerade bist.",
+    "Jeder Haken ist ein kleines Danke an dich selbst.",
+    "Du musst nicht perfekt sein, um gut genug zu sein.",
+    "Gönn dir einen Moment Ruhe. Du hast ihn verdient.",
+    "Atme ein, was du brauchst. Atme aus, was dich bremst.",
+    "Ein gemütlicher Tag ist auch ein guter Tag.",
+    "Du wächst, auch wenn du es gerade nicht merkst.",
+    "Mach es auf deine Art. You do you.",
+    "Sei heute die Sonne in deinem eigenen Tag.",
+    "Weniger müssen, mehr wollen.",
+    "Freundlichkeit fängt bei dir selbst an.",
+    "Ein Schritt nach vorn ist ein Schritt nach vorn, egal wie klein.",
+    "Du darfst dir Zeit lassen.",
+    "Routinen sind kleine Geschenke an dein zukünftiges Ich.",
+    "Lächle über das, was du heute schon geschafft hast.",
+    "Ruhe ist keine verlorene Zeit.",
+    "Hör auf dich. Du weißt, was du brauchst.",
+    "Der Tag muss nicht perfekt sein, um schön zu sein.",
+    "Ein warmer Tee, ein ruhiger Atem, ein klarer Gedanke.",
+    "Fortschritt ist leise. Freu dich trotzdem laut.",
+    "Heute ist ein guter Tag, um nett zu dir zu sein.",
+    "Du schaffst mehr, als du denkst. Und das ist genug.",
+    "Manchmal ist der wichtigste Haken: ausruhen.",
+    "Lass los, was du nicht ändern kannst.",
+    "Jeder Morgen ist ein neuer Anfang.",
+    "Du bist nicht hinterher. Du bist auf deinem Weg.",
+    "Ein bisschen besser als gestern ist mehr als genug.",
+    "Sanft bleiben, dranbleiben.",
+    "Sonne tanken, Herz wärmen, weitermachen.",
+    "Dein Wert hängt nicht an deiner To-do-Liste.",
+    "Atme durch. Dann kommt der nächste kleine Schritt.",
+    "Feier die kleinen Dinge. Sie sind die großen.",
+    "Du darfst Nein sagen, um Ja zu dir zu sagen.",
+    "Gute Gewohnheiten wachsen wie Blumen: mit Geduld.",
+    "Heute reicht es, freundlich und ehrlich mit dir zu sein.",
+    "Auch Pausen bringen dich voran.",
+    "Du bist genau richtig, so wie du bist.",
+    "Schritt für Schritt wird aus Wollen Tun."
+  ]
+}

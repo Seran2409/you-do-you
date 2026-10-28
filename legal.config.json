@@ -1,0 +1,13 @@
+{
+  "_hinweis": "Hier deine Angaben eintragen, dann `npm run legal` ausführen. Alles in [eckigen Klammern] ist ein Platzhalter und erscheint auf den Seiten gelb markiert.",
+  "name": "[Vorname Nachname]",
+  "street": "[Straße Hausnummer]",
+  "city": "[PLZ Ort]",
+  "country": "Deutschland",
+  "countryEn": "Germany",
+  "email": "[E-Mail-Adresse]",
+  "phone": "[Telefonnummer]",
+  "vatId": "",
+  "updated": "27. Oktober 2026",
+  "updatedEn": "October 27, 2026"
+}

@@ -1,0 +1,17 @@
+{
+  "name": "You Do You",
+  "short_name": "You Do You",
+  "description": "To-dos, Routinen und Meditation als sanftes Spiel.",
+  "start_url": "/you-do-you/",
+  "scope": "/you-do-you/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF8EF",
+  "theme_color": "#FFF8EF",
+  "lang": "de",
+  "icons": [
+    { "src": "/you-do-you/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/you-do-you/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/you-do-you/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

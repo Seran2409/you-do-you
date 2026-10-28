@@ -1,0 +1,116 @@
+{
+  "expo": {
+    "name": "You Do You",
+    "slug": "you-do-you",
+    "scheme": "ydy",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "description": "To-dos, Routinen und Meditation als sanftes Spiel: XP, Level, Streaks und Abzeichen.",
+    "githubUrl": "https://github.com/Seran2409/you-do-you",
+    "locales": {
+      "de": "./locales/native/de.json",
+      "en": "./locales/native/en.json"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "de.seran.youdoyou",
+      "config": {
+        "usesNonExemptEncryption": false
+      },
+      "infoPlist": {
+        "CFBundleDisplayName": "You Do You",
+        "CFBundleAllowMixedLocalizations": true,
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "privacyManifests": {
+        "NSPrivacyTracking": false,
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "CA92.1"
+            ]
+          }
+        ]
+      }
+    },
+    "android": {
+      "package": "de.seran.youdoyou",
+      "adaptiveIcon": {
+        "backgroundColor": "#FFE3C2",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.SCHEDULE_EXACT_ALARM",
+        "android.permission.USE_EXACT_ALARM"
+      ]
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/favicon.png",
+      "name": "You Do You",
+      "shortName": "You Do You",
+      "themeColor": "#FFF8EF",
+      "backgroundColor": "#FFF8EF"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      [
+        "expo-localization",
+        {
+          "supportedLocales": {
+            "ios": [
+              "de",
+              "en"
+            ],
+            "android": [
+              "de",
+              "en"
+            ]
+          }
+        }
+      ],
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 260,
+          "resizeMode": "contain",
+          "backgroundColor": "#FFF8EF",
+          "dark": {
+            "image": "./assets/splash-icon-dark.png",
+            "backgroundColor": "#1E1712"
+          }
+        }
+      ],
+      "expo-sqlite",
+      "expo-sharing",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#F5C21B"
+        }
+      ],
+      "expo-audio",
+      "expo-asset"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "baseUrl": "/you-do-you"
+    }
+  }
+}

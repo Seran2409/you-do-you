@@ -1,0 +1,8 @@
+{
+  "ios": {
+    "CFBundleDisplayName": "You Do You"
+  },
+  "android": {
+    "app_name": "You Do You"
+  }
+}
