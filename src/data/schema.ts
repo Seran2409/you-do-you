@@ -15,7 +15,7 @@ export function defaultSettings(): Settings {
     theme: 'system',
     onboarded: false,
     mindfulGoal: DEFAULT_MINDFUL_GOAL,
-    meditation: { minutes: 10, pattern: 'calm', bell: true, dnd: true },
+    meditation: { minutes: 10, pattern: 'calm', bell: true },
   };
 }
 
@@ -71,7 +71,6 @@ function normMeditation(raw: unknown, d: NonNullable<Settings['meditation']>): N
     minutes: minutes >= 1 && minutes <= 120 ? minutes : d.minutes,
     pattern: PATTERNS.includes(raw.pattern as BreathPattern) ? (raw.pattern as BreathPattern) : d.pattern,
     bell: raw.bell !== false,
-    dnd: raw.dnd !== false,
   };
 }
 

@@ -100,16 +100,6 @@ eas build --platform android --profile production
    ```
 3. In App Store Connect und Play Console die neue Version mit „Neu in dieser Version“ einreichen.
 
-## „Nicht stören“ auf Android testen
-
-Die Funktion braucht echten Android-Code und läuft nicht in Expo Go:
-
-1. `eas build --platform android --profile preview` bauen und die APK installieren.
-2. In der App: Meditation → „Nicht stören“ an → „Zugriff erlauben“ → in der Liste „You Do You“ erlauben.
-3. Meditation mit 1 Minute starten, Statusleiste prüfen (Symbol „Bitte nicht stören“), nach dem Gong muss der vorherige Modus zurück sein.
-
-Falls der Android-Build an `modules/dnd-control` scheitert, schick mir die Fehlermeldung aus dem EAS-Log. Das Modul ist der einzige eigene native Code.
-
 ## Häufige Stolperfallen
 
 - **Apple lehnt ab wegen „Minimum Functionality“ (4.2)**: Unwahrscheinlich, weil die App eigenständig funktioniert. Falls doch, in der Antwort auf Erinnerungen, Abzeichen und den Offline-Betrieb hinweisen.

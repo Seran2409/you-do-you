@@ -535,14 +535,6 @@
     "start": "Meditate",
     "bell": "Gong",
     "bellText": "A soft sound at the start and the end.",
-    "dnd": "Do not disturb",
-    "dndText": {
-      "system": "No notifications during the meditation, only alarms.",
-      "ios-hint": "iPhones don't let apps switch this on. Tip: turn on the Do Not Disturb focus in Control Center. Our own reminders pause automatically.",
-      "none": "Not possible in the browser. The Android app switches Do Not Disturb on by itself."
-    },
-    "dndAccessText": "For this, the app needs Do Not Disturb access once.",
-    "dndAccess": "Allow access",
     "statsTitle": "Your calm",
     "statMinutes": "minutes in total",
     "statSessions": "sessions",

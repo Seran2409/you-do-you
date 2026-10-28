@@ -9,7 +9,7 @@ import { Nunito_800ExtraBold } from '@expo-google-fonts/nunito/800ExtraBold';
 import { useFonts } from 'expo-font';
 import { Slot, SplashScreen } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppStoreProvider, useStore } from '../data/AppStore';
@@ -18,7 +18,6 @@ import { ThemeProvider, useTheme } from '../theme/ThemeProvider';
 import { Backdrop } from '../ui/graphics';
 import { FxLayer, SheetProvider, ToastProvider } from '../ui/overlays';
 import { UiStateProvider } from '../ui/uiState';
-import { endQuiet } from '../meditation/quiet';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -52,18 +51,6 @@ function Themed({ fontsReady }: { fontsReady: boolean }) {
   // Switch synchronously so the first frame after a change is already in the new language.
   if (mounted && i18n.language !== lang) i18n.changeLanguage(lang);
   const show = ready && fontsReady;
-  const { actions } = useStore();
-  // A session that ended without wrap-up (app closed) leaves Do Not Disturb on: restore it at launch only,
-  // never while a session in this run is using it.
-  const launchChecked = useRef(false);
-  useEffect(() => {
-    if (!ready || launchChecked.current) return;
-    launchChecked.current = true;
-    if (settings.quietRestore != null) {
-      endQuiet(settings.quietRestore);
-      actions.saveSettings({ quietRestore: null });
-    }
-  }, [ready, settings.quietRestore, actions]);
   useEffect(() => {
     if (show) SplashScreen.hideAsync().catch(() => {});
   }, [show]);

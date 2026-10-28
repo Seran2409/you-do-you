@@ -12,7 +12,6 @@
 | Heatmap, Tagesziel-Ring, Sonnen-Emblem, Logo | react-native-svg | ✅ / ✅ / ✅ |
 | Schriften (Fraunces, Nunito) | @expo-google-fonts | ✅ / ✅ / ✅ |
 | Meditation: Gong, Bildschirm bleibt an | expo-audio, expo-keep-awake | ✅ / ✅ / ✅ |
-| „Nicht stören“ während der Meditation | eigenes kleines Expo-Modul (`modules/dnd-control`, Kotlin) | – / Hinweis / ✅ (mit Erlaubnis) |
 | Glas-Effekt in Tab- und Kopfleiste | expo-blur | ✅ / ✅ / deckende Fläche (Unschärfe auf Android experimentell) |
 | Offline, lokale Daten | gemeinsame Schnittstelle `LocalStore`: Web IndexedDB, Apps expo-sqlite | ✅ / ✅ / ✅ |
 | Benachrichtigungen | expo-notifications (Phase 3) | – / ✅ / ✅ |
@@ -51,6 +50,5 @@ Vite-Web-App + Capacitor: HTML/CSS des Prototyps fast 1:1 übernehmbar, Phase 1 
 
 ## Erkenntnisse „You Do You“
 
-- iOS erlaubt Apps nicht, den Fokus „Nicht stören“ zu schalten. Android erlaubt es mit der Berechtigung `ACCESS_NOTIFICATION_POLICY`, die der Nutzer einmalig in den Systemeinstellungen freigibt. Die App schaltet während der Sitzung auf „nur Wecker“ und stellt den vorherigen Modus wieder her, auch nach einem Absturz beim nächsten Start.
-- Das native Modul ist bewusst minimal und folgt dem Aufbau von `expo-keep-awake`. Es wurde hier nicht kompiliert; der erste Android-Build (Preview) prüft es. Schlägt er fehl, ist `modules/dnd-control` der einzige neue native Code.
+- „Nicht stören“ schaltet die App bewusst nicht selbst: iOS erlaubt es Apps nicht, und auf Android bräuchte es eine Sonderberechtigung und eigenen nativen Code. Während einer Sitzung pausieren nur die eigenen Erinnerungen der App. Damit kommt die App ohne eigenen nativen Code aus.
 - Beide Apps laufen unter derselben GitHub-Pages-Domain; „You Do You“ nutzt deshalb eine eigene Browser-Datenbank (`youdoyou`).

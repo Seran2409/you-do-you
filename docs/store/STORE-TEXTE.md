@@ -23,10 +23,9 @@ Zum Kopieren in App Store Connect und die Google Play Console. Die Zeichengrenze
 - Apple „App Privacy“: **Data Not Collected** (keine Daten erfasst). Kein Tracking.
 - Google „Data safety“: Es werden **keine Daten erhoben** und **keine Daten geteilt**. Löschen geht in der App unter „Alle Daten löschen“.
 - Google „Ads“: **Nein, die App enthält keine Werbung.**
-- Google „Berechtigungen“: „Zugriff auf Bitte nicht stören“ (`ACCESS_NOTIFICATION_POLICY`) wird nur genutzt, um während einer Meditation auf „nur Wecker“ zu schalten. Falls die Play Console nachfragt, genau so beschreiben.
 
 **Hinweise für die App-Prüfung**
-> Kein Login nötig. Alle Daten bleiben lokal auf dem Gerät. Erinnerungen sind optionale lokale Benachrichtigungen. Im Tab „Meditation“ startet ein Timer mit Atemführung; auf Android kann die App mit Erlaubnis des Nutzers „Bitte nicht stören“ für die Dauer der Sitzung einschalten. Die Web-Version unter der Marketing-URL ist dieselbe App.
+> Kein Login nötig. Alle Daten bleiben lokal auf dem Gerät. Erinnerungen sind optionale lokale Benachrichtigungen. Im Tab „Meditation“ startet ein Timer mit Atemführung. Die Web-Version unter der Marketing-URL ist dieselbe App.
 
 ---
 
@@ -68,7 +67,7 @@ MEDITATION MIT TIMER
 • Wähle 1 bis 120 Minuten und atme mit einer sanften Sonne
 • Atemrhythmus: frei, ruhig (4 ein, 6 aus) oder Box (4-4-4-4)
 • Sanfter Gong am Anfang und Ende, der Bildschirm bleibt an
-• Auf Android schaltet die App für die Zeit „Bitte nicht stören“ ein, wenn du es erlaubst
+• Während der Sitzung pausieren die Erinnerungen der App
 • Tagesziel für achtsame Minuten und ein kurzes „Wie fühlst du dich jetzt?“
 
 SANFT GAMIFIZIERT
@@ -132,7 +131,7 @@ MEDITATION WITH A TIMER
 • Pick 1 to 120 minutes and breathe along with a gentle sun
 • Breathing rhythm: free, calm (in 4, out 6) or box (4-4-4-4)
 • A soft gong at the start and end, the screen stays on
-• On Android the app turns on Do Not Disturb for the session if you allow it
+• The app's own reminders pause during the session
 • A daily goal for mindful minutes and a short "How do you feel now?"
 
 GENTLY GAMIFIED

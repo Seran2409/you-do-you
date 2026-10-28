@@ -5,18 +5,17 @@ import { useStore } from '../../data/AppStore';
 import { MED_XP_PER_MIN, MINDFUL_GOAL_BONUS } from '../../game/rules';
 import type { BreathPattern, Settings } from '../../game/types';
 import { dayLabel, fmtNumber } from '../../i18n/format';
-import { openQuietAccess, quietAccess, quietSupport } from '../../meditation/quiet';
 import { useTheme } from '../../theme/ThemeProvider';
 import { fonts } from '../../theme/tokens';
 import { Ring } from '../../ui/graphics';
 import { Icon } from '../../ui/Icon';
-import { Button, Card, Chip, LinkButton, SectionHead, Segmented, Stepper, Switch, TintCard } from '../../ui/primitives';
+import { Button, Card, Chip, SectionHead, Segmented, Stepper, Switch, TintCard } from '../../ui/primitives';
 import { T } from '../../ui/Text';
 import { Screen } from '../shell/Shell';
 import { MOODS } from './SessionScreen';
 
 const PRESETS = [1, 3, 5, 10, 15, 20, 30];
-const DEFAULT_MED: NonNullable<Settings['meditation']> = { minutes: 10, pattern: 'calm', bell: true, dnd: true };
+const DEFAULT_MED: NonNullable<Settings['meditation']> = { minutes: 10, pattern: 'calm', bell: true };
 
 /** Today's mindful minutes against the goal; used here and on the home screen. */
 export function MindfulCard({ quickStart }: { quickStart?: boolean }) {
@@ -65,7 +64,6 @@ export default function MeditateScreen() {
     .slice(0, 5);
   const moods = Object.values(data.sessions || {}).filter((s) => s.moodAfter);
   const avgMood = moods.length ? Math.round(moods.reduce((a, s) => a + (s.moodAfter || 0), 0) / moods.length) : 0;
-  const hasAccess = quietSupport === 'system' && quietAccess();
 
   return (
     <Screen>
@@ -108,16 +106,7 @@ export default function MeditateScreen() {
         <Button icon="lotus" label={t('meditate.start')} onPress={() => router.push('/session')} />
       </Card>
 
-      <View style={{ gap: 8 }}>
-        <Switch on={med.bell} onToggle={() => setMed({ bell: !med.bell })} title={t('meditate.bell')} text={t('meditate.bellText')} />
-        <Switch on={med.dnd} onToggle={() => setMed({ dnd: !med.dnd })} title={t('meditate.dnd')} text={t(`meditate.dndText.${quietSupport}`)} />
-        {med.dnd && quietSupport === 'system' && !hasAccess ? (
-          <Card pad={12} style={{ gap: 8 }}>
-            <T v="small">{t('meditate.dndAccessText')}</T>
-            <LinkButton label={t('meditate.dndAccess')} onPress={openQuietAccess} />
-          </Card>
-        ) : null}
-      </View>
+      <Switch on={med.bell} onToggle={() => setMed({ bell: !med.bell })} title={t('meditate.bell')} text={t('meditate.bellText')} />
 
       <View style={{ gap: 10 }}>
         <SectionHead title={t('meditate.statsTitle')} />

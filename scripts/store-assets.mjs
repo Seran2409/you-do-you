@@ -82,7 +82,7 @@ function docs(lang) {
   const s = SAMPLE[lang];
   const out = [];
   const put = (col, id, doc) => out.push({ key: col + '/' + id, col, id, doc, updatedAt: 0 });
-  put('settings', 'main', { name: lang === 'de' ? 'Mia' : 'Mia', language: lang, timezone: 'Europe/Berlin', dailyGoal: 3, mindfulGoal: 10, mail: { enabled: false }, theme: 'system', onboarded: true, meditation: { minutes: 10, pattern: 'calm', bell: true, dnd: true } });
+  put('settings', 'main', { name: lang === 'de' ? 'Mia' : 'Mia', language: lang, timezone: 'Europe/Berlin', dailyGoal: 3, mindfulGoal: 10, mail: { enabled: false }, theme: 'system', onboarded: true, meditation: { minutes: 10, pattern: 'calm', bell: true } });
   s.todos.forEach(([id, title, kind, diff, subs = []], i) => {
     const scope = kind === 'done' || kind === 'tag-1' ? 'tag' : kind;
     const period = scope === 'ewig' ? null : scope === 'woche' ? '2026-W44' : kind === 'tag-1' ? day(-1) : TODAY;

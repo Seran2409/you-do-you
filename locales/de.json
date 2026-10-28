@@ -535,14 +535,6 @@
     "start": "Meditieren",
     "bell": "Gong",
     "bellText": "Ein sanfter Klang am Anfang und am Ende.",
-    "dnd": "Nicht stören",
-    "dndText": {
-      "system": "Während der Meditation kommen keine Benachrichtigungen, nur Wecker.",
-      "ios-hint": "Das iPhone lässt Apps das nicht selbst einschalten. Tipp: Fokus „Nicht stören“ im Kontrollzentrum aktivieren. Unsere Erinnerungen pausieren automatisch.",
-      "none": "Im Browser nicht möglich. In der App für Android schaltet sie „Nicht stören“ selbst ein."
-    },
-    "dndAccessText": "Dafür braucht die App einmalig Zugriff auf „Bitte nicht stören“.",
-    "dndAccess": "Zugriff erlauben",
     "statsTitle": "Deine Ruhe",
     "statMinutes": "Minuten gesamt",
     "statSessions": "Sitzungen",

@@ -85,9 +85,7 @@ export interface Settings {
   onboarded?: boolean;
   /** Mindful minutes per day for the bonus. */
   mindfulGoal?: number;
-  meditation?: { minutes: number; pattern: BreathPattern; bell: boolean; dnd: boolean };
-  /** Android Do-Not-Disturb mode to restore if a session was interrupted (app closed mid-session). */
-  quietRestore?: number | null;
+  meditation?: { minutes: number; pattern: BreathPattern; bell: boolean };
 }
 
 /** Export/import format and the in-memory state shape. */

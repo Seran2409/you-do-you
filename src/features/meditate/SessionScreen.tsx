@@ -10,7 +10,6 @@ import { useStore } from '../../data/AppStore';
 import { clock } from '../../game/breath';
 import { todayKey } from '../../game/dates';
 import { MED_XP_PER_MIN } from '../../game/rules';
-import { endQuiet, startQuiet } from '../../meditation/quiet';
 import { playGong } from '../../meditation/sound';
 import { cancelOnce, pauseRemindersBetween, scheduleOnce } from '../../notifications';
 import { useTheme } from '../../theme/ThemeProvider';
@@ -32,7 +31,7 @@ export default function SessionScreen() {
   const insets = useSafeAreaInsets();
   const { settings, actions } = useStore();
   const params = useLocalSearchParams<{ minutes?: string }>();
-  const med = settings.meditation ?? { minutes: 10, pattern: 'calm' as const, bell: true, dnd: true };
+  const med = settings.meditation ?? { minutes: 10, pattern: 'calm' as const, bell: true };
   const minutes = Math.max(1, Math.min(120, Number(params.minutes) || med.minutes));
   const total = minutes * 60_000;
 
@@ -43,7 +42,6 @@ export default function SessionScreen() {
   const endAt = useRef(Date.now() + total);
   const left = useRef(total);
   const started = useRef(new Date());
-  const quietPrev = useRef<number | null>(null);
   const finished = useRef(false);
 
   const endText = useCallback(() => [t('meditate.endTitle'), t('meditate.endBody'), t('notify.channel')] as const, [t]);
@@ -54,8 +52,6 @@ export default function SessionScreen() {
       if (finished.current) return null;
       finished.current = true;
       cancelOnce(END_ID).catch(() => {});
-      endQuiet(quietPrev.current);
-      if (quietPrev.current != null) actions.saveSettings({ quietRestore: null });
       const seconds = completed ? minutes * 60 : Math.round((total - Math.max(0, left.current)) / 1000);
       if (seconds < 60) return { id: null, seconds, completed };
       const id = actions.saveSession({ date: todayKey(), startedAt: started.current.toISOString(), minutes, seconds, completed, pattern: med.pattern });
@@ -76,13 +72,9 @@ export default function SessionScreen() {
     [wrapUp, med.bell],
   );
 
-  // Start: gong, quiet mode, pause own reminders, backup notification for the end.
+  // Start: gong, pause own reminders, backup notification for the end.
   useEffect(() => {
     if (med.bell) playGong();
-    if (med.dnd) {
-      quietPrev.current = startQuiet();
-      if (quietPrev.current != null) actions.saveSettings({ quietRestore: quietPrev.current });
-    }
     const [title, body, channel] = endText();
     pauseRemindersBetween(Date.now(), endAt.current + 60_000).catch(() => {});
     scheduleOnce(END_ID, new Date(endAt.current), title, body, channel).catch(() => {});

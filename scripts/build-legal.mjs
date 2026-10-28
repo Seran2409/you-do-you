@@ -94,8 +94,8 @@ const datenschutz = `
 <p>Löschen kannst du alles in der App unter Einstellungen → „Alle Daten löschen“, durch Deinstallieren der App oder in der Web-Version durch Löschen der Websitedaten in deinem Browser.</p>
 <h2>4. Erinnerungen</h2>
 <p>Erinnerungen gibt es nur, wenn du sie einschaltest und deinem Gerät die Erlaubnis für Benachrichtigungen gibst. Ihr Inhalt wird auf dem Gerät erzeugt. Du kannst sie jederzeit in der App oder in den Systemeinstellungen abschalten.</p>
-<h2>4a. Meditation und „Nicht stören“</h2>
-<p>Während einer Meditation bleibt der Bildschirm an, und die App plant ihre eigenen Erinnerungen so, dass sie nicht stören. Auf Android-Geräten kann die App den Modus „Bitte nicht stören“ für die Dauer der Sitzung auf „nur Wecker“ stellen und danach den vorherigen Modus wiederherstellen. Das geschieht nur, wenn du ihr diesen Zugriff in den Systemeinstellungen ausdrücklich erlaubst; du kannst ihn dort jederzeit wieder entziehen. Dabei werden keine Daten übertragen. Auf dem iPhone ist das technisch nicht möglich, dort ändert die App nichts an deinen Fokus-Einstellungen.</p>
+<h2>4a. Meditation</h2>
+<p>Während einer Meditation bleibt der Bildschirm an, und die App plant ihre eigenen Erinnerungen so, dass sie nicht stören. An deinen Systemeinstellungen und an Benachrichtigungen anderer Apps ändert sie nichts.</p>
 <h2>5. Export und Import</h2>
 <p>Der Export erzeugt eine Datei mit deinen Daten. Wo du sie speicherst oder mit wem du sie teilst, entscheidest du; dann gelten die Bedingungen des jeweiligen Dienstes.</p>
 <h2>6. Download über App Store und Google Play</h2>
@@ -158,8 +158,8 @@ const hilfe = `
 <p>Einstellungen → „Daten exportieren“ erzeugt eine Datei. Auf dem neuen Gerät: Einstellungen → „Daten importieren“ und die Datei wählen. Der Import ersetzt die Daten auf dem neuen Gerät.</p>
 <h2>Die Erinnerungen kommen nicht.</h2>
 <p>Prüfe in den Einstellungen der App, ob „Morgens erinnern“ an ist, und in den Systemeinstellungen deines Handys, ob die App Benachrichtigungen senden darf. Auf manchen Android-Geräten verzögern Energiesparfunktionen Erinnerungen; nimm die App dort von der Akku-Optimierung aus. Öffne die App ab und zu, dann plant sie die Erinnerungen der nächsten Tage neu.</p>
-<h2>Warum schaltet die App „Nicht stören“ nicht ein?</h2>
-<p>Auf Android braucht die App dafür einmalig deine Erlaubnis: Meditation → „Nicht stören“ → „Zugriff erlauben“. Auf dem iPhone erlaubt Apple Apps das nicht; aktiviere dort vor der Meditation den Fokus „Nicht stören“ im Kontrollzentrum.</p>
+<h2>Wie meditiere ich ohne Benachrichtigungen?</h2>
+<p>Die Erinnerungen der App pausieren während einer Sitzung von selbst. Für alle anderen Apps schalte vor der Meditation „Bitte nicht stören“ ein: auf dem iPhone im Kontrollzentrum (Fokus), auf Android in den Schnelleinstellungen.</p>
 <h2>Wie funktionieren XP und Level?</h2>
 <p>Jedes erledigte To-do, jeder Unterpunkt, jeder Routinen-Eintrag und jede Minute Meditation bringt XP. Schwierige To-dos zählen mehr, erreichte Ziele geben Bonus-XP. Die genaue Tabelle steht in der App im Tab „Level“.</p>
 <h2>Wie lösche ich alles?</h2>
@@ -183,8 +183,8 @@ const privacy = `
 <p>You can delete everything in the app under Settings → “Delete all data”, by uninstalling the app or, for the web version, by clearing the site data in your browser.</p>
 <h2>4. Reminders</h2>
 <p>Reminders are only sent if you turn them on and allow notifications on your device. Their content is created on the device. You can turn them off at any time in the app or in your system settings.</p>
-<h2>4a. Meditation and Do Not Disturb</h2>
-<p>During a meditation the screen stays on, and the app keeps its own reminders out of the way. On Android devices the app can switch Do Not Disturb to "alarms only" for the length of the session and restore your previous mode afterwards. It only does this if you explicitly grant this access in your system settings, and you can revoke it there at any time. No data is transferred. On iPhone this is technically not possible; the app does not change your Focus settings there.</p>
+<h2>4a. Meditation</h2>
+<p>During a meditation the screen stays on, and the app keeps its own reminders out of the way. It does not change your system settings or other apps' notifications.</p>
 <h2>5. Export and import</h2>
 <p>Export creates a file with your data. Where you store it or whom you share it with is up to you; the terms of that service then apply.</p>
 <h2>6. Download via the App Store and Google Play</h2>
@@ -247,8 +247,8 @@ const support = `
 <p>Settings → “Export data” creates a file. On the new device: Settings → “Import data” and pick the file. Importing replaces the data on the new device.</p>
 <h2>Reminders don't arrive.</h2>
 <p>Check in the app's settings that “Morning reminder” is on, and in your phone's system settings that the app may send notifications. Some Android phones delay reminders to save battery; exclude the app from battery optimization there. Open the app now and then so it can plan the next days' reminders.</p>
-<h2>Why doesn't the app turn on Do Not Disturb?</h2>
-<p>On Android the app needs your permission once: Meditate → “Do not disturb” → “Allow access”. On iPhone, Apple doesn't allow apps to do this; turn on the Do Not Disturb focus in Control Center before you meditate.</p>
+<h2>How do I meditate without notifications?</h2>
+<p>The app's own reminders pause during a session by themselves. For all other apps, turn on Do Not Disturb before you meditate: on iPhone in Control Center (Focus), on Android in Quick Settings.</p>
 <h2>How do XP and levels work?</h2>
 <p>Every finished to-do, subtask, routine check-in and minute of meditation earns XP. Hard to-dos count more, reached goals give bonus XP. The full table is in the app's “Level” tab.</p>
 <h2>How do I delete everything?</h2>

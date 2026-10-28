@@ -14,8 +14,7 @@ Schwester-App mit klarem Schwarz-Gelb-Design: [Haven't Done It Yet!](https://git
 
 - **To-dos:** Aktuell, Woche, Monat, Jahr, Unterpunkte, Schwierigkeit
 - **Routinen:** Tag, Woche, Monat, Jahr, nach Tageszeit (morgens, mittags, abends), Tagesziel, Rückblick
-- **Meditation:** Timer von 1 bis 120 Minuten, Atemführung (frei, ruhig 4–6, Box 4-4-4-4), Gong, Bildschirm bleibt an, Tagesziel für achtsame Minuten, Stimmung danach, Verlauf
-- **Nicht stören:** Android schaltet während der Sitzung auf „nur Wecker“ (mit deiner Erlaubnis); auf dem iPhone gibt es einen Hinweis, eigene Erinnerungen pausieren überall
+- **Meditation:** Timer von 1 bis 120 Minuten, Atemführung (frei, ruhig 4–6, Box 4-4-4-4), Gong, Bildschirm bleibt an, eigene Erinnerungen pausieren, Tagesziel für achtsame Minuten, Stimmung danach, Verlauf
 - **Spiel:** XP (2 XP pro Meditationsminute, +15 fürs Tagesziel), Level, 18 Abzeichen, Streak, Heatmap
 - **Erinnerungen:** morgens, abends, Achtsamkeits-Pause
 
@@ -23,7 +22,7 @@ Schwester-App mit klarem Schwarz-Gelb-Design: [Haven't Done It Yet!](https://git
 
 | Dokument | Inhalt |
 |---|---|
-| [docs/VEROEFFENTLICHEN.md](docs/VEROEFFENTLICHEN.md) | App Store und Google Play, komplett von Windows aus; „Nicht stören“ testen |
+| [docs/VEROEFFENTLICHEN.md](docs/VEROEFFENTLICHEN.md) | App Store und Google Play, komplett von Windows aus |
 | [docs/store/STORE-TEXTE.md](docs/store/STORE-TEXTE.md) | Name, Untertitel, Beschreibung, Schlüsselwörter, Datenschutz-Angaben (DE/EN) |
 | [docs/MONETARISIERUNG.md](docs/MONETARISIERUNG.md) | Pro-Version, faire Werbung, Rechenbeispiel |
 | [docs/PROMOTION.md](docs/PROMOTION.md) | ASO, Social-Media-Formate, Zeitplan bis Januar |
@@ -62,9 +61,8 @@ src/app/              Routen: Start, To-Dos, Routinen, Meditation, Level, Sitzun
 src/features/         Bildschirme (meditate/: Tab, Sitzung, Atem-Sonne)
 src/game/             Spiellogik ohne UI: XP inkl. Meditation, Level, Streak, Abzeichen, Atemzyklen, Erinnerungsplan
 src/data/             lokaler Speicher (Web: IndexedDB, Apps: SQLite), Import/Export
-src/meditation/       Gong, „Nicht stören“
+src/meditation/       Gong
 src/notifications/    lokale Erinnerungen (Android/iOS)
-modules/dnd-control/  kleines natives Android-Modul für „Bitte nicht stören“
 locales/              de.json, en.json
 public/legal/         Rechtstexte (erzeugt)
 docs/store/           Store-Texte, Screenshots, Feature-Grafiken
