@@ -342,7 +342,7 @@ export function XpTag({ xp, suffix }: { xp: number; suffix?: boolean }) {
     <View style={{ backgroundColor: c.hazardSoft, borderRadius: 6, paddingHorizontal: 7, paddingVertical: 2 }}>
       <T v="monoBold" color={c.hazardText} style={{ fontSize: 12 }}>
         +{xp}
-        {suffix ? ' XP' : ''}
+        {suffix ? '\u00A0XP' : ''}
       </T>
     </View>
   );
@@ -391,7 +391,7 @@ export function Field({ label, hint, children }: { label: string; hint?: string;
     <View style={{ gap: 7 }}>
       <T v="tiny" muted style={{ fontFamily: fonts.bodyBold, letterSpacing: 0.3 }}>
         {label}
-        {hint ? <T v="tiny" muted>{' · ' + hint}</T> : null}
+        {hint ? <T v="tiny" muted>{'\u00A0· ' + hint}</T> : null}
       </T>
       {children}
     </View>

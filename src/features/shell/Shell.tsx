@@ -9,7 +9,7 @@ import { useStore } from '../../data/AppStore';
 import { headerDate } from '../../i18n/format';
 import { useTheme } from '../../theme/ThemeProvider';
 import { fonts, GUTTER, MAX_WIDTH } from '../../theme/tokens';
-import { Glass, Logo } from '../../ui/graphics';
+import { Glass, Logo, withAlpha } from '../../ui/graphics';
 import { Icon, type IconName } from '../../ui/Icon';
 import { useSheet } from '../../ui/overlays';
 import { IconButton } from '../../ui/primitives';
@@ -18,12 +18,6 @@ import { T } from '../../ui/Text';
 import { SettingsSheet } from '../settings/SettingsSheet';
 
 export const TOPBAR_H = 74;
-
-/** '#RRGGBB' with alpha, so fades end in the page color instead of transparent black. */
-function alpha(hex: string, a: number) {
-  const n = parseInt(hex.slice(1, 7), 16);
-  return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`;
-}
 
 export const TABS: { href: '/' | '/todos' | '/routines' | '/meditate' | '/level'; key: string; icon: IconName }[] = [
   { href: '/', key: 'home', icon: 'home' },
@@ -160,7 +154,7 @@ export function Screen({ children, fab }: { children: ReactNode; fab?: { label: 
       {/* Content fades out above the floating tab bar instead of being cut off behind it. */}
       <LinearGradient
         pointerEvents="none"
-        colors={[alpha(c.bg, 0), alpha(c.bg, 0.94)]}
+        colors={[withAlpha(c.bg, 0), withAlpha(c.bg, 0.94)]}
         locations={[0, 0.6]}
         style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 118 + insets.bottom }}
       />

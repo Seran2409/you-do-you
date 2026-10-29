@@ -1,7 +1,7 @@
 import { ACHIEVEMENTS } from './achievements';
 import { addDays, periodKey } from './dates';
 import { levelInfo, type LevelInfo } from './level';
-import { DEFAULT_MINDFUL_GOAL, GOAL_BONUS, MED_MAX_MIN, MED_XP_PER_MIN, MINDFUL_GOAL_BONUS, ROUT_BONUS, ROUT_XP, SUB_XP } from './rules';
+import { DEFAULT_MINDFUL_GOAL, GOAL_BONUS, MED_MAX_MIN, MINDFUL_GOAL_BONUS, ROUT_BONUS, ROUT_XP, sessionXp, SUB_XP } from './rules';
 import { todoXp } from './todos';
 import type { AppData, DayKey, RoutineScope } from './types';
 
@@ -119,7 +119,7 @@ export function compute(data: ComputeInput, today: DayKey, dailyGoal: number, mi
   for (const s of Object.values(data.sessions || {})) {
     const min = Math.min(MED_MAX_MIN, Math.floor((Number(s.seconds) || 0) / 60));
     if (min <= 0 || !s.date) continue;
-    add(s.date, min * MED_XP_PER_MIN);
+    add(s.date, sessionXp(min));
     mindfulByDay.set(s.date, (mindfulByDay.get(s.date) || 0) + min);
     mindfulMinutes += min;
     if (s.completed) sessionsDone++;

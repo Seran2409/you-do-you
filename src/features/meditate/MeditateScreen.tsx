@@ -2,9 +2,9 @@ import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 import { useStore } from '../../data/AppStore';
-import { MED_XP_PER_MIN, MINDFUL_GOAL_BONUS } from '../../game/rules';
-import type { BreathPattern, Settings } from '../../game/types';
-import { dayLabel, fmtNumber } from '../../i18n/format';
+import { DEFAULT_MEDITATION, MINDFUL_GOAL_BONUS, sessionXp } from '../../game/rules';
+import type { BreathPattern } from '../../game/types';
+import { dayLabel, fmtNumber, SEP } from '../../i18n/format';
 import { useTheme } from '../../theme/ThemeProvider';
 import { fonts } from '../../theme/tokens';
 import { Ring } from '../../ui/graphics';
@@ -15,7 +15,6 @@ import { Screen } from '../shell/Shell';
 import { MOODS } from './SessionScreen';
 
 const PRESETS = [1, 3, 5, 10, 15, 20, 30];
-const DEFAULT_MED: NonNullable<Settings['meditation']> = { minutes: 10, pattern: 'calm', bell: true };
 
 /** Today's mindful minutes against the goal; used here and on the home screen. */
 export function MindfulCard({ quickStart }: { quickStart?: boolean }) {
@@ -57,7 +56,7 @@ export default function MeditateScreen() {
   const { t } = useTranslation();
   const { c } = useTheme();
   const { data, settings, stats, today, actions } = useStore();
-  const med = { ...DEFAULT_MED, ...(settings.meditation ?? {}) };
+  const med = { ...DEFAULT_MEDITATION, ...settings.meditation };
   const setMed = (patch: Partial<typeof med>) => actions.saveSettings({ meditation: { ...med, ...patch } });
   const recent = Object.values(data.sessions || {})
     .sort((a, b) => b.startedAt.localeCompare(a.startedAt))
@@ -82,7 +81,7 @@ export default function MeditateScreen() {
           <View style={{ alignItems: 'center', gap: 2, minWidth: 128 }}>
             <T style={{ fontFamily: fonts.displayHeavy, fontSize: 60, lineHeight: 66, color: c.ink, fontVariant: ['tabular-nums'] }}>{med.minutes}</T>
             <T v="smallBold" muted>
-              {t('meditate.minutes', { count: med.minutes })} · +{Math.min(60, med.minutes) * MED_XP_PER_MIN} XP
+              {`${t('meditate.minutes', { count: med.minutes })}${SEP}+${sessionXp(med.minutes)}\u00A0XP`}
             </T>
           </View>
           <IconButton icon="plus" size={46} color={c.ink} label={t('common.more')} disabled={med.minutes >= 120} onPress={() => setMed({ minutes: med.minutes + 1 })} style={{ borderRadius: 23, backgroundColor: c.track }} />
@@ -140,7 +139,9 @@ export default function MeditateScreen() {
                 <View style={{ flex: 1 }}>
                   <T v="bold">{t('meditate.minutes', { count: Math.floor(s.seconds / 60) })}</T>
                   <T v="tiny" muted>
-                    {dayLabel(s.date, today)} · {t(`meditate.pattern.${s.pattern}`)}
+                    {dayLabel(s.date, today)}
+                    {SEP}
+                    {t(`meditate.pattern.${s.pattern}`)}
                   </T>
                 </View>
                 {s.moodAfter ? <T style={{ fontSize: 20 }}>{MOODS[s.moodAfter - 1]}</T> : null}

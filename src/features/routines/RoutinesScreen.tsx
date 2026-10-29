@@ -4,6 +4,7 @@ import { useStore } from '../../data/AppStore';
 import { daysLeft } from '../../game/dates';
 import { ROUTINE_SCOPES } from '../../game/rules';
 import { activeRoutines, openRoutineCount, scopeSummary } from '../../game/routines';
+import { SEP } from '../../i18n/format';
 import { useTheme } from '../../theme/ThemeProvider';
 import { fonts } from '../../theme/tokens';
 import { useSheet } from '../../ui/overlays';
@@ -58,7 +59,7 @@ export default function RoutinesScreen() {
                 <ProgressBar pct={pct} color={c.onBlack} />
                 <T v="small" color={c.onBlackMuted}>
                   {t('routines.lookback', { name: t(`routines.prevName.${scope}`), met: sum.metPrev, total: sum.total })}
-                  {scope !== 'tag' ? ' · ' + t('routines.daysLeft', { count: dl }) : ''}
+                  {scope !== 'tag' ? SEP + t('routines.daysLeft', { count: dl }) : ''}
                 </T>
               </View>
             </View>

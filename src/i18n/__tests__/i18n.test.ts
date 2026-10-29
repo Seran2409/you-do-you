@@ -37,7 +37,7 @@ describe('languages', () => {
   it('formats dates and numbers per language', async () => {
     await i18n.changeLanguage('de');
     expect(headerDate(TODAY)).toBe('Montag, 26. Oktober');
-    expect(periodLabel('woche', TODAY, TODAY)).toBe('KW 44 · 26.10.–1.11.');
+    expect(periodLabel('woche', TODAY, TODAY)).toBe('KW 44 · 26.10.–1.11.');
     expect(periodLabel('monat', TODAY, TODAY)).toBe('Oktober 2026');
     expect(dayLabel('2026-10-27', TODAY)).toBe('Morgen');
     expect(fmtNumber(1635)).toBe('1.635');
@@ -45,7 +45,7 @@ describe('languages', () => {
 
     await i18n.changeLanguage('en');
     expect(headerDate(TODAY)).toBe('Monday, October 26');
-    expect(periodLabel('woche', TODAY, TODAY)).toBe('Week 44 · 10/26–11/1');
+    expect(periodLabel('woche', TODAY, TODAY)).toBe('Week 44 · 10/26–11/1');
     expect(fmtNumber(1635)).toBe('1,635');
     expect(joinList(['a', 'b'])).toBe('a and b');
   });

@@ -6,7 +6,7 @@ import { daysLeft, hourNow } from '../../game/dates';
 import { GOAL_BONUS, MAX_GOAL, ROUT_BONUS, ROUT_XP } from '../../game/rules';
 import { groupBySlot, isToggleOnly, periodCount, routineReview, slotAt, targetOf, todayCount, type SlotGroupKey } from '../../game/routines';
 import type { Routine } from '../../game/types';
-import { shortPeriod } from '../../i18n/format';
+import { SEP, shortPeriod } from '../../i18n/format';
 import { useTheme } from '../../theme/ThemeProvider';
 import { fonts, radius } from '../../theme/tokens';
 import { Ring } from '../../ui/graphics';
@@ -150,7 +150,7 @@ function Lookback({ routine: r, onEdit, onDelete }: { routine: Routine; onEdit: 
         ))}
       </ScrollView>
       <T v="small" muted>
-        {parts.join(' · ')}
+        {parts.join(SEP)}
       </T>
       <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
         <Chip icon="edit" label={t('common.edit')} onPress={onEdit} />
@@ -163,7 +163,6 @@ function Lookback({ routine: r, onEdit, onDelete }: { routine: Routine; onEdit: 
 /** Daily goal ring card. With `editable` it shows the stepper (Routines tab), otherwise a link (Home). */
 export function GoalCard({ editable }: { editable?: boolean }) {
   const { t } = useTranslation();
-  const { c } = useTheme();
   const { stats, today, goal, actions } = useStore();
   const done = stats.checkinsByDay.get(today) || 0;
   const reached = goal > 0 && done >= goal;

@@ -1,4 +1,4 @@
-import type { Diff, RoutineScope, Scope } from './types';
+import type { Diff, RoutineScope, Scope, Settings } from './types';
 
 /** XP rules. Must stay identical to the prototype and the morning mail. */
 export const TODO_XP: Record<Scope, number> = { tag: 10, ewig: 15, woche: 25, monat: 50, jahr: 120 };
@@ -15,6 +15,12 @@ export const MED_XP_PER_MIN = 2;
 export const MED_MAX_MIN = 60;
 export const MINDFUL_GOAL_BONUS = 15;
 export const DEFAULT_MINDFUL_GOAL = 10;
+export const DEFAULT_MEDITATION: NonNullable<Settings['meditation']> = { minutes: 10, pattern: 'calm', bell: true };
+
+/** XP for a session of `minutes` full minutes. */
+export function sessionXp(minutes: number): number {
+  return Math.min(MED_MAX_MIN, minutes) * MED_XP_PER_MIN;
+}
 
 export const ROUTINE_SCOPES: RoutineScope[] = ['tag', 'woche', 'monat', 'jahr'];
 export const TODO_TABS = ['aktuell', 'woche', 'monat', 'jahr'] as const;

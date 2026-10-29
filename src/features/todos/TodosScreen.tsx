@@ -4,7 +4,7 @@ import { useStore } from '../../data/AppStore';
 import { daysLeft, periodKey, shiftPeriod } from '../../game/dates';
 import { TODO_TABS } from '../../game/rules';
 import { aktuellLists, listProgress, openInCurrent, periodLists } from '../../game/todos';
-import { periodLabel } from '../../i18n/format';
+import { periodLabel, SEP } from '../../i18n/format';
 import { useTheme } from '../../theme/ThemeProvider';
 import { fonts } from '../../theme/tokens';
 import { Icon } from '../../ui/Icon';
@@ -98,7 +98,7 @@ export default function TodosScreen() {
 
       {!all.length ? (
         <Empty
-          title={tab === 'aktuell' ? listName : `${t(`todos.tab.${tab}`)} · ${periodLabel(tab, cursor, today)}`}
+          title={tab === 'aktuell' ? listName : `${t(`todos.tab.${tab}`)}${SEP}${periodLabel(tab, cursor, today)}`}
           text={tab === 'aktuell' ? t('todos.emptyNow') : t('todos.emptyPeriod')}
         >
           <Button small icon="plus" label={t('todos.newTodo')} onPress={openForm} />
@@ -118,7 +118,7 @@ export default function TodosScreen() {
                 <ProgressBar pct={prog} color={c.onBlack} label={t('todos.progressIn', { list: listName })} />
                 <T v="small" color={c.onBlackMuted}>
                   {t('todos.progressSummary', { done: lists.done.length, total: all.length })}
-                  {sTot ? ' · ' + t('todos.subsSummary', { done: sDone, total: sTot }) : ''}
+                  {sTot ? SEP + t('todos.subsSummary', { done: sDone, total: sTot }) : ''}
                 </T>
               </View>
             </View>

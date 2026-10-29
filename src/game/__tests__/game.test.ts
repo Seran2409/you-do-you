@@ -207,7 +207,6 @@ describe('matches the prototype', () => {
     vi.setSystemTime(new Date(2026, 9, 26, 12));
     const data = randomHistory(TODAY, seed);
     for (const goal of [0, 3, 5]) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const ref: any = prototypeCompute(data, goal);
       const st = compute(data, TODAY, goal);
       expect(st.total).toBe(ref.total);

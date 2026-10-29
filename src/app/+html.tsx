@@ -16,7 +16,7 @@ export default function Root({ children }: PropsWithChildren) {
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <title>You Do You</title>
-        <meta name="description" content="To-dos und Routinen als Spiel: XP, Level, Streaks und Abzeichen. / To-dos and routines as a game." />
+        <meta name="description" content="To-dos, Routinen und Meditation als sanftes Spiel: XP, Level, Streaks und Abzeichen. / To-dos, routines and meditation as a gentle game." />
         <meta name="theme-color" content="#FFF8EF" media="(prefers-color-scheme: light)" />
         <meta name="theme-color" content="#1E1712" media="(prefers-color-scheme: dark)" />
         <meta name="apple-mobile-web-app-capable" content="yes" />

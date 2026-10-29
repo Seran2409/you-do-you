@@ -22,6 +22,12 @@ export function mix(a: string, b: string, p: number): string {
   return '#' + x.map((v, i) => Math.round(v * p + y[i] * (1 - p)).toString(16).padStart(2, '0')).join('');
 }
 
+/** '#RRGGBB' with alpha, e.g. so fades end in the page color instead of transparent black. */
+export function withAlpha(hex: string, a: number): string {
+  const [r, g, b] = hexRgb(hex);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
 /** Split "rgba(r,g,b,a)" for SVG stops, which take color and opacity separately. */
 function rgba(s: string): { color: string; opacity: number } {
   const m = s.match(/rgba?\(([^)]+)\)/);

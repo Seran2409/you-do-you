@@ -6,6 +6,9 @@ import i18n from './index';
  * Day keys are civil dates stored as UTC midnight, so every formatter uses timeZone 'UTC'.
  */
 
+/** Separator for inline lists ("1× a day · 1× to go"). The no-break space keeps "·" from starting a new line. */
+export const SEP = '\u00A0· ';
+
 const locale = () => (i18n.language === 'de' ? 'de-DE' : 'en-US');
 
 export function fmtDay(k: DayKey, opts: Intl.DateTimeFormatOptions): string {

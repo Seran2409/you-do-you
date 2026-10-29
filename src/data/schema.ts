@@ -1,5 +1,5 @@
 import { deviceTimeZone } from '../game/dates';
-import { DEFAULT_GOAL, DEFAULT_MINDFUL_GOAL } from '../game/rules';
+import { DEFAULT_GOAL, DEFAULT_MEDITATION, DEFAULT_MINDFUL_GOAL } from '../game/rules';
 import type { AppData, BreathPattern, Day, Diff, Routine, RoutineScope, Scope, Session, Settings, Sub, Todo } from '../game/types';
 
 export const EXPORT_VERSION = 1;
@@ -15,7 +15,7 @@ export function defaultSettings(): Settings {
     theme: 'system',
     onboarded: false,
     mindfulGoal: DEFAULT_MINDFUL_GOAL,
-    meditation: { minutes: 10, pattern: 'calm', bell: true },
+    meditation: { ...DEFAULT_MEDITATION },
   };
 }
 
@@ -55,7 +55,7 @@ function normSettings(raw: unknown): Settings {
       mindfulTime: hhmm(push.mindfulTime, '12:30'),
     },
     mindfulGoal: Number.isFinite(Number(raw.mindfulGoal)) && Number(raw.mindfulGoal) >= 1 ? Math.min(120, Math.round(Number(raw.mindfulGoal))) : DEFAULT_MINDFUL_GOAL,
-    meditation: normMeditation(raw.meditation, d.meditation!),
+    meditation: normMeditation(raw.meditation, DEFAULT_MEDITATION),
     theme: raw.theme === 'light' || raw.theme === 'dark' ? raw.theme : 'system',
     // Imported data means the person already knows the app.
     onboarded: true,
@@ -65,7 +65,7 @@ function normSettings(raw: unknown): Settings {
 const PATTERNS: BreathPattern[] = ['free', 'calm', 'box'];
 
 function normMeditation(raw: unknown, d: NonNullable<Settings['meditation']>): NonNullable<Settings['meditation']> {
-  if (!isObj(raw)) return d;
+  if (!isObj(raw)) return { ...d };
   const minutes = Math.round(Number(raw.minutes));
   return {
     minutes: minutes >= 1 && minutes <= 120 ? minutes : d.minutes,

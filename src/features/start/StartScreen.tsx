@@ -12,7 +12,7 @@ import { activeRoutines } from '../../game/routines';
 import { aktuellLists, activeTodos, openInCurrent, todoXp } from '../../game/todos';
 import type { Todo } from '../../game/types';
 import i18n from '../../i18n';
-import { joinList } from '../../i18n/format';
+import { joinList, SEP } from '../../i18n/format';
 import { useTheme } from '../../theme/ThemeProvider';
 import { fonts, radius } from '../../theme/tokens';
 import { SunMark } from '../../ui/graphics';
@@ -77,7 +77,7 @@ function StartRow({ todo, last }: { todo: Todo; last: boolean }) {
   const where = late
     ? t('todos.overdue')
     : (todo.scope === 'tag' ? t('day.today') : t('todos.noDate')) +
-      (todo.subs.length ? ' · ' + t('todos.subsSummary', { done: todo.subs.filter((s) => s.done).length, total: todo.subs.length }) : '');
+      (todo.subs.length ? SEP + t('todos.subsSummary', { done: todo.subs.filter((s) => s.done).length, total: todo.subs.length }) : '');
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 10, borderBottomWidth: last ? 0 : 1, borderBottomColor: c.line }}>
       <Checkbox checked={false} onPress={() => actions.toggleTodo(todo.id)} label={t('todos.check', { title: todo.title })} />
@@ -151,7 +151,7 @@ function TodaySection() {
   const ui = useUi();
   const open = aktuellLists(data.todos, today).open;
   const n = open.length;
-  const any = activeTodos(data.todos).length > 0;
+  const hasTodos = activeTodos(data.todos).length > 0;
   const more = (
     [
       ['woche', 'moreWeek'],
@@ -176,7 +176,7 @@ function TodaySection() {
       <SectionHead title={t('start.today')} right={<LinkButton label={t('start.allTodos')} onPress={goTodos} />} />
       <Card pad={0} style={{ paddingVertical: 14, paddingHorizontal: 16, gap: 8 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
-          {n || !any ? (
+          {n || !hasTodos ? (
             <T style={{ fontFamily: fonts.displayHeavy, fontSize: 42, lineHeight: 46 }}>{n}</T>
           ) : (
             <View style={{ width: 46, height: 46, borderRadius: 23, backgroundColor: c.goSoft, alignItems: 'center', justifyContent: 'center' }}>
@@ -185,7 +185,7 @@ function TodaySection() {
           )}
           <View style={{ flex: 1, gap: 2 }}>
             <T v="bold" style={{ fontSize: 17 }}>
-              {n ? t('start.waiting', { count: n }) : any ? t('start.nothingLeft') : t('start.noTodos')}
+              {n ? t('start.waiting', { count: n }) : hasTodos ? t('start.nothingLeft') : t('start.noTodos')}
             </T>
             {n ? (
               moreTxt ? (
@@ -195,7 +195,7 @@ function TodaySection() {
               ) : null
             ) : (
               <T v="small" muted>
-                {any ? moreTxt || t('start.enjoy') : t('start.noTodosSub')}
+                {hasTodos ? moreTxt || t('start.enjoy') : t('start.noTodosSub')}
               </T>
             )}
           </View>
@@ -208,7 +208,7 @@ function TodaySection() {
           </View>
         ) : null}
         {n > 5 ? <LinkButton label={t('start.andMore', { count: n - 5 })} onPress={goTodos} /> : null}
-        {!any ? (
+        {!hasTodos ? (
           <Button small icon="plus" label={t('start.firstTodo')} style={{ alignSelf: 'flex-start' }} onPress={() => sheet.open((cl) => <TodoForm id={null} close={cl} />, t('todoForm.newTitle'))} />
         ) : null}
       </Card>

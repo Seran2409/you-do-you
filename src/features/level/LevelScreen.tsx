@@ -146,7 +146,7 @@ export default function LevelScreen() {
           {ACHIEVEMENTS.map((a) => {
             const ok = stats.unlocked.has(a.key);
             const inner = (
-              <View style={{ flexDirection: 'row', gap: 10, alignItems: 'flex-start' }}>
+              <View style={{ gap: 8 }}>
                 <View
                   style={{
                     width: 36,
@@ -160,7 +160,7 @@ export default function LevelScreen() {
                 >
                   <Icon name={a.icon} size={18} color={ok ? c.hazardInk : c.muted} />
                 </View>
-                <View style={{ flex: 1, minWidth: 0 }}>
+                <View>
                   <T v="smallBold" color={ok ? c.ink : c.muted} style={{ lineHeight: 18 }}>
                     {t(`badges.${a.key}.name`)}
                   </T>

@@ -10,7 +10,7 @@ import Svg, { Circle } from 'react-native-svg';
 import { useStore } from '../../data/AppStore';
 import { clock } from '../../game/breath';
 import { todayKey } from '../../game/dates';
-import { MED_XP_PER_MIN } from '../../game/rules';
+import { DEFAULT_MEDITATION, sessionXp } from '../../game/rules';
 import { playGong } from '../../meditation/sound';
 import { cancelOnce, pauseRemindersBetween, scheduleOnce } from '../../notifications';
 import { useTheme } from '../../theme/ThemeProvider';
@@ -57,7 +57,7 @@ export default function SessionScreen() {
   const insets = useSafeAreaInsets();
   const { settings, actions } = useStore();
   const params = useLocalSearchParams<{ minutes?: string }>();
-  const med = settings.meditation ?? { minutes: 10, pattern: 'calm' as const, bell: true };
+  const med = settings.meditation ?? DEFAULT_MEDITATION;
   const minutes = Math.max(1, Math.min(120, Number(params.minutes) || med.minutes));
   const total = minutes * 60_000;
 
@@ -108,7 +108,6 @@ export default function SessionScreen() {
       wrapUp(false);
     };
     // Once per session.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -181,14 +180,14 @@ export default function SessionScreen() {
           </>
         ) : (
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: 18, width: '100%' }}>
-            <Breath pattern="free" elapsedMs={0} running={false} size={140} />
+            <Breath pattern="free" elapsedMs={0} running={false} size={140} showLabel={false} />
             {result && result.seconds >= 60 ? (
               <>
                 <T v="h1" style={{ textAlign: 'center' }}>
                   {result.completed ? t('meditate.doneTitle') : t('meditate.endedTitle')}
                 </T>
                 <T muted style={{ textAlign: 'center' }}>
-                  {t('meditate.doneText', { count: Math.floor(result.seconds / 60), xp: Math.min(60, Math.floor(result.seconds / 60)) * MED_XP_PER_MIN })}
+                  {t('meditate.doneText', { count: Math.floor(result.seconds / 60), xp: sessionXp(Math.floor(result.seconds / 60)) })}
                 </T>
                 <T v="bold" style={{ marginTop: 6 }}>
                   {t('meditate.moodQuestion')}

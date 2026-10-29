@@ -7,6 +7,7 @@ import { exportFileName, pickJson, saveJson } from '../../data/files';
 import { normalizeImport } from '../../data/schema';
 import { MAX_GOAL } from '../../game/rules';
 import type { AppData, Language, Settings, ThemePref } from '../../game/types';
+import { SEP } from '../../i18n/format';
 import { ensurePermission, remindersSupported } from '../../notifications';
 import { useTheme } from '../../theme/ThemeProvider';
 import { Icon } from '../../ui/Icon';
@@ -300,7 +301,9 @@ export function SettingsSheet({ close }: { close: () => void }) {
             <LinkRow label={t('settings.support')} url={legal.support} last />
           </View>
           <T v="tiny" muted style={{ textAlign: 'center', marginTop: 4 }}>
-            {t('app.name')} · {t('settings.version', { version: APP_VERSION })}
+            {t('app.name')}
+            {SEP}
+            {t('settings.version', { version: APP_VERSION })}
           </T>
         </Section>
       </View>

@@ -1,7 +1,6 @@
 import type { AppData } from '../game/types';
 
 export type Collection = 'settings' | 'todos' | 'routines' | 'days' | 'sessions';
-export const COLLECTIONS: Collection[] = ['settings', 'todos', 'routines', 'days', 'sessions'];
 export const SETTINGS_ID = 'main';
 
 /**
@@ -16,14 +15,15 @@ export interface LocalStore {
 }
 
 /** Turn rows of a store into AppData (null when nothing was ever saved). */
-export function assemble(rows: { col: Collection; id: string; doc: any }[]): AppData | null {
+export function assemble(rows: { col: Collection; id: string; doc: unknown }[]): AppData | null {
   if (!rows.length) return null;
-  const data: any = { settings: null, todos: {}, routines: {}, days: {}, sessions: {} };
+  const data: { settings: unknown } & Record<Exclude<Collection, 'settings'>, Record<string, unknown>> = { settings: null, todos: {}, routines: {}, days: {}, sessions: {} };
   for (const r of rows) {
     if (r.col === 'settings') data.settings = r.doc;
-    else data[r.col][r.id] = r.col === 'days' ? r.doc : { ...r.doc, id: r.id };
+    else data[r.col][r.id] = r.col === 'days' ? r.doc : { ...(r.doc as object), id: r.id };
   }
-  return data as AppData;
+  // The documents were written by this app, so they already have the AppData shape.
+  return data as unknown as AppData;
 }
 
 /** Flatten AppData into documents for replaceAll. */

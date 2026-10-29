@@ -78,7 +78,3 @@ export function openInCurrent(todos: Record<string, Todo>, scope: PeriodScope, t
   return activeTodos(todos).filter((t) => t.scope === scope && t.period === k && !t.done).length;
 }
 
-/** "Current to-dos" for the mail: not archived and no date or current period. */
-export function currentTodoSet(todos: Record<string, Todo>, today: DayKey): Todo[] {
-  return activeTodos(todos).filter((t) => t.scope === 'ewig' || t.period === periodKey(t.scope, today));
-}
