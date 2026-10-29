@@ -9,7 +9,7 @@ import { useTheme } from '../../theme/ThemeProvider';
 import { fonts } from '../../theme/tokens';
 import { Ring } from '../../ui/graphics';
 import { Icon } from '../../ui/Icon';
-import { Button, Card, Chip, SectionHead, Segmented, Stepper, Switch, TintCard } from '../../ui/primitives';
+import { Button, Card, Chip, IconButton, SectionHead, Segmented, Stepper, Switch, TintCard } from '../../ui/primitives';
 import { T } from '../../ui/Text';
 import { Screen } from '../shell/Shell';
 import { MOODS } from './SessionScreen';
@@ -77,18 +77,21 @@ export default function MeditateScreen() {
       <MindfulCard />
 
       <Card style={{ gap: 16 }}>
-        <View style={{ alignItems: 'center', gap: 2 }}>
-          <T style={{ fontFamily: fonts.displayHeavy, fontSize: 56, lineHeight: 62, color: c.ink }}>{med.minutes}</T>
-          <T v="smallBold" muted>
-            {t('meditate.minutes', { count: med.minutes })} · +{Math.min(60, med.minutes) * MED_XP_PER_MIN} XP
-          </T>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 18 }}>
+          <IconButton icon="minus" size={46} color={c.ink} label={t('common.less')} disabled={med.minutes <= 1} onPress={() => setMed({ minutes: med.minutes - 1 })} style={{ borderRadius: 23, backgroundColor: c.track }} />
+          <View style={{ alignItems: 'center', gap: 2, minWidth: 128 }}>
+            <T style={{ fontFamily: fonts.displayHeavy, fontSize: 60, lineHeight: 66, color: c.ink, fontVariant: ['tabular-nums'] }}>{med.minutes}</T>
+            <T v="smallBold" muted>
+              {t('meditate.minutes', { count: med.minutes })} · +{Math.min(60, med.minutes) * MED_XP_PER_MIN} XP
+            </T>
+          </View>
+          <IconButton icon="plus" size={46} color={c.ink} label={t('common.more')} disabled={med.minutes >= 120} onPress={() => setMed({ minutes: med.minutes + 1 })} style={{ borderRadius: 23, backgroundColor: c.track }} />
         </View>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}>
           {PRESETS.map((m) => (
             <Chip key={m} label={`${m}`} selected={med.minutes === m} onPress={() => setMed({ minutes: m })} />
           ))}
         </View>
-        <Stepper value={med.minutes} min={1} max={120} onChange={(v) => setMed({ minutes: v })} decLabel={t('common.less')} incLabel={t('common.more')} style={{ alignSelf: 'center' }} />
         <View style={{ gap: 8 }}>
           <T v="tiny" muted style={{ fontFamily: fonts.bodyBold }}>
             {t('meditate.breathing')}

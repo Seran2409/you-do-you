@@ -4,8 +4,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, Pressable, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Svg, { Circle } from 'react-native-svg';
 import { useStore } from '../../data/AppStore';
 import { clock } from '../../game/breath';
 import { todayKey } from '../../game/dates';
@@ -21,6 +22,31 @@ import { Breath } from './Breath';
 
 export const MOODS = ['😣', '🙁', '😐', '🙂', '😊'];
 const END_ID = 'session-end';
+
+/** Thin ring around the breathing sun that fills up over the session. */
+function SessionRing({ size, pct, color, track }: { size: number; pct: number; color: string; track: string }) {
+  const r = size / 2 - 4;
+  const circ = 2 * Math.PI * r;
+  const p = Math.max(0, Math.min(1, pct));
+  return (
+    <Svg width={size} height={size} style={StyleSheet.absoluteFill} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+      <Circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={track} strokeWidth={4} />
+      {p > 0 ? (
+        <Circle
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          fill="none"
+          stroke={color}
+          strokeWidth={4}
+          strokeLinecap="round"
+          strokeDasharray={`${(circ * p).toFixed(1)} ${circ.toFixed(1)}`}
+          transform={`rotate(-90 ${size / 2} ${size / 2})`}
+        />
+      ) : null}
+    </Svg>
+  );
+}
 
 type Status = 'running' | 'paused' | 'done';
 
@@ -130,7 +156,10 @@ export default function SessionScreen() {
                 </T>
               ) : null}
             </View>
-            <Breath pattern={med.pattern} elapsedMs={elapsed} running={status === 'running'} size={250} />
+            <View style={{ width: 296, height: 296, alignItems: 'center', justifyContent: 'center' }}>
+              <SessionRing size={296} pct={elapsed / total} color={c.accent} track={c.track} />
+              <Breath pattern={med.pattern} elapsedMs={elapsed} running={status === 'running'} size={240} />
+            </View>
             <View style={{ alignItems: 'center', gap: 16, width: '100%' }}>
               <Pressable
                 onPress={status === 'running' ? pause : resume}

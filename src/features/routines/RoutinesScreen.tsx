@@ -67,7 +67,7 @@ export default function RoutinesScreen() {
         </View>
       ) : (
         <Empty title={t(`routines.empty.${scope}`)} text={t('routines.emptyText')}>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 8 }}>
             {SUGGESTIONS.map((s) => {
               const title = t(`routines.suggest.${s.key}`);
               return (

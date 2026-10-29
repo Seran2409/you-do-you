@@ -1,7 +1,9 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { router, usePathname } from 'expo-router';
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import Animated, { Extrapolation, interpolate, useAnimatedScrollHandler, useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useStore } from '../../data/AppStore';
 import { headerDate } from '../../i18n/format';
@@ -11,10 +13,17 @@ import { Glass, Logo } from '../../ui/graphics';
 import { Icon, type IconName } from '../../ui/Icon';
 import { useSheet } from '../../ui/overlays';
 import { IconButton } from '../../ui/primitives';
+import { pageScroll } from '../../ui/scroll';
 import { T } from '../../ui/Text';
 import { SettingsSheet } from '../settings/SettingsSheet';
 
 export const TOPBAR_H = 74;
+
+/** '#RRGGBB' with alpha, so fades end in the page color instead of transparent black. */
+function alpha(hex: string, a: number) {
+  const n = parseInt(hex.slice(1, 7), 16);
+  return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`;
+}
 
 export const TABS: { href: '/' | '/todos' | '/routines' | '/meditate' | '/level'; key: string; icon: IconName }[] = [
   { href: '/', key: 'home', icon: 'home' },
@@ -31,8 +40,13 @@ export function TopBar() {
   const { stats, today } = useStore();
   const sheet = useSheet();
   const cold = stats.streak === 0;
+  // Clear at rest, frosted with a hairline as soon as content slides under the bar.
+  const glassStyle = useAnimatedStyle(() => ({ opacity: interpolate(pageScroll.value, [0, 24], [0, 1], Extrapolation.CLAMP) }));
   return (
-    <Glass tone="top" style={{ position: 'absolute', top: 0, left: 0, right: 0, paddingTop: insets.top, zIndex: 20 }}>
+    <View style={{ position: 'absolute', top: 0, left: 0, right: 0, paddingTop: insets.top, zIndex: 20 }}>
+      <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, glassStyle]}>
+        <Glass tone="top" style={[StyleSheet.absoluteFill, { borderBottomWidth: 1, borderColor: c.glassLine }]} />
+      </Animated.View>
       <View
         style={{
           height: TOPBAR_H,
@@ -72,7 +86,7 @@ export function TopBar() {
           <IconButton icon="sliders" label={t('top.settings')} onPress={() => sheet.open((close) => <SettingsSheet close={close} />, t('settings.title'))} />
         </View>
       </View>
-    </Glass>
+    </View>
   );
 }
 
@@ -117,10 +131,19 @@ export function TabBar() {
 
 /** Scrollable page column (max 600 px) under the glass bars, with an optional floating add button. */
 export function Screen({ children, fab }: { children: ReactNode; fab?: { label: string; a11y: string; onPress: () => void } }) {
+  const { c } = useTheme();
   const insets = useSafeAreaInsets();
+  const onScroll = useAnimatedScrollHandler((e) => {
+    pageScroll.value = e.contentOffset.y;
+  });
+  useEffect(() => {
+    pageScroll.value = 0;
+  }, []);
   return (
     <View style={{ flex: 1 }}>
-      <ScrollView
+      <Animated.ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={16}
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={{
           width: '100%',
@@ -133,7 +156,14 @@ export function Screen({ children, fab }: { children: ReactNode; fab?: { label: 
         }}
       >
         {children}
-      </ScrollView>
+      </Animated.ScrollView>
+      {/* Content fades out above the floating tab bar instead of being cut off behind it. */}
+      <LinearGradient
+        pointerEvents="none"
+        colors={[alpha(c.bg, 0), alpha(c.bg, 0.94)]}
+        locations={[0, 0.6]}
+        style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 118 + insets.bottom }}
+      />
       {fab ? <Fab {...fab} /> : null}
     </View>
   );

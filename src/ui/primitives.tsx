@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, View, type PressableProps, type StyleProp, type 
 import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withTiming } from 'react-native-reanimated';
 import { OnBlack, useTheme } from '../theme/ThemeProvider';
 import { fonts, radius, tintColors, type Tint } from '../theme/tokens';
+import { EmptyArt } from './graphics';
 import { Icon, type IconName } from './Icon';
 import { T } from './Text';
 
@@ -372,12 +373,15 @@ export function SectionHead({ title, right }: { title: string; right?: ReactNode
 export function Empty({ title, text, children }: { title: string; text: string; children?: ReactNode }) {
   const { c } = useTheme();
   return (
-    <View style={{ gap: 12, padding: 20, borderWidth: 1.5, borderStyle: 'dashed', borderColor: c.lineStrong, borderRadius: radius.r }}>
-      <T v="bold">{title}</T>
-      <T v="body" muted style={{ fontSize: 15 }}>
+    <View style={{ alignItems: 'center', gap: 10, paddingHorizontal: 20, paddingTop: 18, paddingBottom: 22, backgroundColor: c.surface, borderWidth: 1, borderColor: c.line, borderRadius: radius.r, boxShadow: c.shadow }}>
+      <EmptyArt ground={c.surface} width={156} />
+      <T v="h2" style={{ textAlign: 'center' }}>
+        {title}
+      </T>
+      <T v="body" muted style={{ fontSize: 15, textAlign: 'center', maxWidth: 420 }}>
         {text}
       </T>
-      {children}
+      {children ? <View style={{ alignSelf: 'stretch', alignItems: 'center', marginTop: 4 }}>{children}</View> : null}
     </View>
   );
 }

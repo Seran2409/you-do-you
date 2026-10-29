@@ -2,7 +2,7 @@ import { BlurView } from 'expo-blur';
 import { useEffect, useId, type ReactNode } from 'react';
 import { Platform, StyleSheet, View, useWindowDimensions, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withTiming } from 'react-native-reanimated';
-import Svg, { Circle, Defs, Ellipse, G, Line, LinearGradient, RadialGradient, Stop } from 'react-native-svg';
+import Svg, { Circle, Defs, Ellipse, G, Line, LinearGradient, Path, RadialGradient, Stop } from 'react-native-svg';
 import { LinearGradient as ExpoLinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../theme/ThemeProvider';
 import { fonts } from '../theme/tokens';
@@ -55,6 +55,43 @@ export function SunMark({ size = 28, rays = true }: { size?: number; rays?: bool
         </G>
       ) : null}
       <Circle cx={12} cy={12} r={disc} fill={`url(#${id})`} />
+    </Svg>
+  );
+}
+
+const HILL = 'M0 70 C 30 58, 52 63, 72 66 S 116 59, 140 64';
+
+/** Empty-state picture: the sun rising behind a hill with a little sprout. `ground` matches the card behind it. */
+export function EmptyArt({ ground, width = 140 }: { ground?: string; width?: number }) {
+  const { c } = useTheme();
+  const id = 'rise' + useId().replace(/:/g, '');
+  const up = [200, 223, 246, 270, 294, 317, 340].map((d) => (d * Math.PI) / 180);
+  return (
+    <Svg width={width} height={(width * 90) / 140} viewBox="0 0 140 90" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+      <Defs>
+        <LinearGradient id={id} x1="0" y1="0" x2="1" y2="1">
+          <Stop offset="0" stopColor="#FFD978" />
+          <Stop offset="1" stopColor={c.flame} />
+        </LinearGradient>
+        <RadialGradient id={id + 'g'} cx={70} cy={64} r={44} gradientUnits="userSpaceOnUse">
+          <Stop offset="0.4" stopColor={c.hazard} stopOpacity={0.3} />
+          <Stop offset="1" stopColor={c.hazard} stopOpacity={0} />
+        </RadialGradient>
+      </Defs>
+      <Circle cx={70} cy={64} r={44} fill={`url(#${id}g)`} />
+      <G stroke="#F2A33A" strokeWidth={3.4} strokeLinecap="round">
+        {up.map((a, i) => (
+          <Line key={i} x1={70 + Math.cos(a) * 27} y1={64 + Math.sin(a) * 27} x2={70 + Math.cos(a) * (i % 2 ? 33 : 36)} y2={64 + Math.sin(a) * (i % 2 ? 33 : 36)} />
+        ))}
+      </G>
+      <Circle cx={70} cy={64} r={20} fill={`url(#${id})`} />
+      <Path d={`${HILL} V90 H0 Z`} fill={ground ?? c.surface} />
+      <Path d={HILL} fill="none" stroke={c.lineStrong} strokeWidth={2} strokeLinecap="round" />
+      <G>
+        <Line x1={106} y1={62} x2={106} y2={50} stroke={c.go} strokeWidth={2.4} strokeLinecap="round" />
+        <Path d="M106 55 C 100 55, 97 51, 98 47 C 102 47, 106 50, 106 55 Z" fill={c.go} />
+        <Path d="M106 52 C 112 52, 115 48, 114 44 C 110 44, 106 47, 106 52 Z" fill={c.go} opacity={0.8} />
+      </G>
     </Svg>
   );
 }
@@ -206,7 +243,7 @@ export function Backdrop() {
 /* ---------- glass ---------- */
 
 /** Translucent surface with blur behind it. Android gets the opaque fallback (blur there is experimental). */
-export function Glass({ tone, style, children }: { tone: 'bar' | 'top'; style?: StyleProp<ViewStyle>; children: ReactNode }) {
+export function Glass({ tone, style, children }: { tone: 'bar' | 'top'; style?: StyleProp<ViewStyle>; children?: ReactNode }) {
   const { c, dark } = useTheme();
   const canBlur = Platform.OS !== 'android';
   const bg = canBlur ? (tone === 'bar' ? c.glass : c.glassTop) : c.glassSolid;
