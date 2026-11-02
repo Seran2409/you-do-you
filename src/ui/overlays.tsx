@@ -12,13 +12,14 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native';
-import Animated, { Easing, FadeInDown, FadeOut, useAnimatedStyle, useReducedMotion, useSharedValue, withTiming, type SharedValue } from 'react-native-reanimated';
+import Animated, { Easing, FadeInDown, FadeOut, useAnimatedStyle, useReducedMotion, useSharedValue, withSpring, withTiming, type SharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { subscribe } from '../data/feedback';
 import { levelTitleKey, type LevelInfo } from '../game/level';
 import { useTheme } from '../theme/ThemeProvider';
 import { MAX_WIDTH, fonts } from '../theme/tokens';
 import { HexBadge } from './graphics';
+import { useVisibleArea } from './keyboard';
 import { Button, IconButton } from './primitives';
 import { maybeAskForReview } from './review';
 import { Rich, T, safe } from './Text';
@@ -46,36 +47,76 @@ export function SheetProvider({ children }: { children: ReactNode }) {
   );
 }
 
-function SheetModal({ sheet, close }: { sheet: { render: SheetRender; label: string; key: number } | null; close: () => void }) {
+type SheetState = { render: SheetRender; label: string; key: number };
+
+const SHEET_OUT_MS = 200;
+
+function SheetModal({ sheet, close }: { sheet: SheetState | null; close: () => void }) {
   const { c } = useTheme();
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
+  const reduce = useReducedMotion();
+  // Web: the part of the page the keyboard leaves visible, so the sheet and its fields sit above it.
+  const area = useVisibleArea();
+  // The sheet stays mounted while it animates out.
+  const [shown, setShown] = useState<SheetState | null>(sheet);
+  const progress = useSharedValue(0);
+
+  useEffect(() => {
+    if (sheet) {
+      setShown(sheet);
+      progress.value = 0;
+      progress.value = reduce ? 1 : withSpring(1, { damping: 24, stiffness: 260, mass: 0.9 });
+      return;
+    }
+    progress.value = withTiming(0, { duration: reduce ? 0 : SHEET_OUT_MS, easing: Easing.in(Easing.quad) });
+    const t = setTimeout(() => setShown(null), reduce ? 0 : SHEET_OUT_MS);
+    return () => clearTimeout(t);
+  }, [sheet, progress, reduce]);
+
+  const scrimStyle = useAnimatedStyle(() => ({ opacity: Math.min(1, progress.value) }));
+  const sheetStyle = useAnimatedStyle(() => ({
+    opacity: Math.min(1, progress.value * 2.5),
+    transform: [{ translateY: (1 - progress.value) * 90 }],
+  }));
+
   return (
-    <Modal visible={!!sheet} transparent animationType="fade" onRequestClose={close} statusBarTranslucent>
+    <Modal visible={!!shown} transparent animationType="none" onRequestClose={close} statusBarTranslucent>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
-        <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
-          <Pressable accessibilityLabel="close" importantForAccessibility="no" style={[StyleSheet.absoluteFill, { backgroundColor: c.scrim }]} onPress={close} />
-          {sheet ? (
+        <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: c.scrim }, scrimStyle]}>
+          <Pressable accessibilityLabel="close" importantForAccessibility="no" style={StyleSheet.absoluteFill} onPress={close} />
+        </Animated.View>
+        <View
+          pointerEvents="box-none"
+          style={[
+            { justifyContent: 'flex-end', alignItems: 'center' },
+            area ? { position: 'absolute', left: 0, right: 0, top: area.top, height: area.height } : { flex: 1 },
+          ]}
+        >
+          {shown ? (
             <Animated.View
-              key={sheet.key}
-              entering={FadeInDown.duration(220)}
+              key={shown.key}
               accessibilityViewIsModal
-              accessibilityLabel={sheet.label}
-              style={{
-                width: '100%',
-                maxWidth: MAX_WIDTH,
-                maxHeight: height * 0.9,
-                backgroundColor: c.bg,
-                borderTopLeftRadius: 22,
-                borderTopRightRadius: 22,
-              }}
+              accessibilityLabel={shown.label}
+              style={[
+                {
+                  width: '100%',
+                  maxWidth: MAX_WIDTH,
+                  maxHeight: (area ? area.height : height) * 0.9,
+                  backgroundColor: c.bg,
+                  borderTopLeftRadius: 22,
+                  borderTopRightRadius: 22,
+                  boxShadow: c.glassShadow,
+                },
+                sheetStyle,
+              ]}
             >
               <ScrollView
                 keyboardShouldPersistTaps="handled"
-                contentContainerStyle={{ paddingTop: 10, paddingHorizontal: 18, paddingBottom: 20 + insets.bottom }}
+                contentContainerStyle={{ paddingTop: 10, paddingHorizontal: 18, paddingBottom: area ? 16 : 20 + insets.bottom }}
               >
                 <View style={{ width: 40, height: 5, borderRadius: 9, backgroundColor: c.lineStrong, alignSelf: 'center', marginBottom: 12 }} />
-                {sheet.render(close)}
+                {shown.render(close)}
               </ScrollView>
             </Animated.View>
           ) : null}
@@ -141,8 +182,8 @@ function Toasts({ items }: { items: ToastItem[] }) {
         return (
           <Animated.View
             key={i.id}
-            entering={FadeInDown.duration(250)}
-            exiting={FadeOut.duration(250)}
+            entering={FadeInDown.springify().damping(20).stiffness(220)}
+            exiting={FadeOut.duration(220)}
             style={{
               maxWidth: 520,
               backgroundColor: bg,

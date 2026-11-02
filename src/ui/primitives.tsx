@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, type ReactNode } from 'react';
 import { Pressable, StyleSheet, View, type PressableProps, type StyleProp, type ViewStyle } from 'react-native';
-import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { Easing, useAnimatedStyle, useReducedMotion, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { OnBlack, useTheme } from '../theme/ThemeProvider';
 import { fonts, radius, tintColors, type Tint } from '../theme/tokens';
 import { EmptyArt } from './graphics';
@@ -40,11 +40,43 @@ export function TintCard({ tint, style, children, pad = 16 }: { tint: Tint; styl
 
 /* ---------- buttons ---------- */
 
-function Press({ style, children, ...rest }: PressableProps & { style?: StyleProp<ViewStyle>; children: ReactNode }) {
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+/** Pressable that eases down a little while held and springs back on release, instead of snapping. */
+export function PressScale({
+  scaleTo = 0.96,
+  style,
+  children,
+  onPressIn,
+  onPressOut,
+  ...rest
+}: Omit<PressableProps, 'style' | 'children'> & { scaleTo?: number; style?: StyleProp<ViewStyle>; children?: ReactNode }) {
+  const reduce = useReducedMotion();
+  const scale = useSharedValue(1);
+  const anim = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
   return (
-    <Pressable {...rest} style={({ pressed }) => [style, pressed && { transform: [{ scale: 0.96 }] }, rest.disabled && { opacity: 0.35 }]}>
+    <AnimatedPressable
+      {...rest}
+      onPressIn={(e) => {
+        if (!reduce) scale.value = withTiming(scaleTo, { duration: 110, easing: Easing.out(Easing.quad) });
+        onPressIn?.(e);
+      }}
+      onPressOut={(e) => {
+        scale.value = reduce ? 1 : withSpring(1, { damping: 14, stiffness: 320 });
+        onPressOut?.(e);
+      }}
+      style={[style, anim]}
+    >
       {children}
-    </Pressable>
+    </AnimatedPressable>
+  );
+}
+
+function Press({ style, children, ...rest }: Omit<PressableProps, 'style' | 'children'> & { style?: StyleProp<ViewStyle>; children: ReactNode }) {
+  return (
+    <PressScale {...rest} style={[style, rest.disabled && { opacity: 0.35 }]}>
+      {children}
+    </PressScale>
   );
 }
 
@@ -302,35 +334,35 @@ export function Checkbox({ checked, onPress, label, small }: { checked: boolean;
   const reduce = useReducedMotion();
   const p = useSharedValue(checked ? 1 : 0);
   useEffect(() => {
-    p.value = reduce ? (checked ? 1 : 0) : withTiming(checked ? 1 : 0, { duration: 150 });
+    if (reduce) p.value = checked ? 1 : 0;
+    // Ticking pops the mark in with a little spring; unticking just fades it out.
+    else p.value = checked ? withSpring(1, { damping: 11, stiffness: 300 }) : withTiming(0, { duration: 140 });
   }, [checked, reduce, p]);
-  const mark = useAnimatedStyle(() => ({ opacity: p.value, transform: [{ scale: 0.5 + p.value * 0.5 }] }));
+  const mark = useAnimatedStyle(() => ({ opacity: Math.min(1, p.value), transform: [{ scale: 0.4 + p.value * 0.6 }] }));
   const s = small ? 22 : 28;
   return (
-    <Pressable
+    <PressScale
+      scaleTo={0.86}
       onPress={onPress}
       accessibilityRole="checkbox"
       aria-checked={checked}
       accessibilityLabel={label}
       hitSlop={small ? 11 : 8}
-      style={({ pressed }) => [
-        {
-          width: s,
-          height: s,
-          borderRadius: s / 2,
-          borderWidth: 2,
-          borderColor: checked ? c.go : c.lineStrong,
-          backgroundColor: checked ? c.go : c.surface,
-          alignItems: 'center',
-          justifyContent: 'center',
-        },
-        pressed && { transform: [{ scale: 0.88 }] },
-      ]}
+      style={{
+        width: s,
+        height: s,
+        borderRadius: s / 2,
+        borderWidth: 2,
+        borderColor: checked ? c.go : c.lineStrong,
+        backgroundColor: checked ? c.go : c.surface,
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
     >
       <Animated.View style={mark}>
         <Icon name="check" size={small ? 14 : 17} color={c.onGo} strokeWidth={3.2} />
       </Animated.View>
-    </Pressable>
+    </PressScale>
   );
 }
 

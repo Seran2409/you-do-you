@@ -93,7 +93,7 @@ export function TodoCard({ todo }: { todo: Todo }) {
                 returnKeyType="done"
                 blurOnSubmit={false}
                 onSubmitEditing={submitSub}
-                style={{ flex: 1, height: 38, borderRadius: 10, paddingHorizontal: 10, fontSize: 15 }}
+                style={{ flex: 1, height: 38, borderRadius: 10, paddingHorizontal: 10 }}
               />
               <IconButton icon="plus" label={t('todos.addSub')} onPress={submitSub} />
             </View>

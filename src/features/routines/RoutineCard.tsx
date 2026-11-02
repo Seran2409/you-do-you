@@ -12,7 +12,7 @@ import { fonts, radius } from '../../theme/tokens';
 import { Ring } from '../../ui/graphics';
 import { Icon, type IconName } from '../../ui/Icon';
 import { useSheet } from '../../ui/overlays';
-import { Card, Chip, IconButton, LinkButton, SegBar, Stepper } from '../../ui/primitives';
+import { Card, Chip, IconButton, LinkButton, PressScale, SegBar, Stepper } from '../../ui/primitives';
 import { T } from '../../ui/Text';
 import { useUi } from '../../ui/uiState';
 import { ConfirmDelete } from '../todos/sheets';
@@ -85,25 +85,23 @@ export function RoutineCard({ routine: r, mini }: { routine: Routine; mini?: boo
         </Pressable>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
           {todayC > 0 && !toggleOnly ? <IconButton icon="minus" label={t('routines.undo')} onPress={() => actions.decRoutine(r.id)} /> : null}
-          <Pressable
+          <PressScale
+            scaleTo={0.9}
             onPress={() => actions.incRoutine(r.id)}
             accessibilityRole={toggleOnly ? 'checkbox' : 'button'}
             aria-checked={toggleOnly ? todayC > 0 : undefined}
             accessibilityLabel={t('routines.inc', { title: r.title, xp: ROUT_XP[r.scope] })}
-            style={({ pressed }) => [
-              {
-                height: 44,
-                minWidth: 58,
-                paddingHorizontal: 12,
-                borderRadius: 13,
-                backgroundColor: met ? c.go : c.accent,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 4,
-              },
-              pressed && { transform: [{ scale: 0.92 }] },
-            ]}
+            style={{
+              height: 44,
+              minWidth: 58,
+              paddingHorizontal: 12,
+              borderRadius: 13,
+              backgroundColor: met ? c.go : c.accent,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 4,
+            }}
           >
             {met && toggleOnly ? (
               <Icon name="check" size={18} color={c.onGo} strokeWidth={3} />
@@ -115,7 +113,7 @@ export function RoutineCard({ routine: r, mini }: { routine: Routine; mini?: boo
                 </T>
               </>
             )}
-          </Pressable>
+          </PressScale>
         </View>
       </View>
       {expanded ? <Lookback routine={r} onEdit={() => sheet.open((cl) => <RoutineForm id={r.id} close={cl} />, t('routineForm.editTitle'))} onDelete={() => sheet.open((cl) => <ConfirmDelete kind="routine" id={r.id} close={cl} />, t('confirm.label'))} /> : null}

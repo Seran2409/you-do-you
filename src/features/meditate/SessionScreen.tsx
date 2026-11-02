@@ -16,7 +16,7 @@ import { cancelOnce, pauseRemindersBetween, scheduleOnce } from '../../notificat
 import { useTheme } from '../../theme/ThemeProvider';
 import { fonts, MAX_WIDTH } from '../../theme/tokens';
 import { Icon } from '../../ui/Icon';
-import { Button } from '../../ui/primitives';
+import { Button, PressScale } from '../../ui/primitives';
 import { T } from '../../ui/Text';
 import { Breath } from './Breath';
 
@@ -160,17 +160,15 @@ export default function SessionScreen() {
               <Breath pattern={med.pattern} elapsedMs={elapsed} running={status === 'running'} size={240} />
             </View>
             <View style={{ alignItems: 'center', gap: 16, width: '100%' }}>
-              <Pressable
+              <PressScale
+                scaleTo={0.92}
                 onPress={status === 'running' ? pause : resume}
                 accessibilityRole="button"
                 accessibilityLabel={status === 'running' ? t('meditate.pause') : t('meditate.resume')}
-                style={({ pressed }) => [
-                  { width: 76, height: 76, borderRadius: 38, backgroundColor: c.accent, alignItems: 'center', justifyContent: 'center', boxShadow: c.glassShadow },
-                  pressed && { transform: [{ scale: 0.94 }] },
-                ]}
+                style={{ width: 76, height: 76, borderRadius: 38, backgroundColor: c.accent, alignItems: 'center', justifyContent: 'center', boxShadow: c.glassShadow }}
               >
                 <Icon name={status === 'running' ? 'pause' : 'play'} size={30} color={c.onAccent} strokeWidth={2.6} />
-              </Pressable>
+              </PressScale>
               <Pressable onPress={() => finish(false)} accessibilityRole="button" hitSlop={10}>
                 <T v="smallBold" muted style={{ textDecorationLine: 'underline' }}>
                   {t('meditate.end')}

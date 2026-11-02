@@ -16,6 +16,7 @@ import { AppStoreProvider, useStore } from '../data/AppStore';
 import i18n, { resolveLang } from '../i18n';
 import { ThemeProvider, useTheme } from '../theme/ThemeProvider';
 import { Backdrop } from '../ui/graphics';
+import { useKeepFocusedFieldVisible } from '../ui/keyboard';
 import { FxLayer, SheetProvider, ToastProvider } from '../ui/overlays';
 import { UiStateProvider } from '../ui/uiState';
 
@@ -47,6 +48,7 @@ function Themed({ fontsReady }: { fontsReady: boolean }) {
   // only a neutral shell, so hydration matches and the real colors are applied on the next render.
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+  useKeepFocusedFieldVisible();
   const lang = resolveLang(settings.language);
   // Switch synchronously so the first frame after a change is already in the new language.
   if (mounted && i18n.language !== lang) i18n.changeLanguage(lang);

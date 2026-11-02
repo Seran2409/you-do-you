@@ -40,7 +40,8 @@ export function Input(props: React.ComponentProps<typeof TextInput> & { small?: 
           borderRadius: 13,
           backgroundColor: c.surface,
           paddingHorizontal: 14,
-          fontSize: small ? 15 : 16,
+          // At least 16 px, otherwise iOS Safari zooms in when the field gets focus.
+          fontSize: 16,
           fontFamily: fonts.body,
           color: c.ink,
           outlineStyle: 'none',

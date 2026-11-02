@@ -1,8 +1,8 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
-import Animated, { Easing, useAnimatedStyle, useReducedMotion, useSharedValue, withTiming } from 'react-native-reanimated';
+import { StyleSheet, View } from 'react-native';
+import Animated, { Easing, FadeIn, useAnimatedStyle, useReducedMotion, useSharedValue, withTiming } from 'react-native-reanimated';
 import { breathPhase } from '../../game/breath';
 import type { BreathPattern } from '../../game/types';
 import { useTheme } from '../../theme/ThemeProvider';
@@ -52,10 +52,13 @@ export function Breath({
         <LinearGradient colors={['#FFE3A6', '#FFC08A', '#F49A7A']} start={{ x: 0.2, y: 0 }} end={{ x: 0.8, y: 1 }} style={{ flex: 1 }} />
       </Animated.View>
       {showLabel ? (
-        <View style={{ position: 'absolute', alignItems: 'center', paddingHorizontal: size * 0.14 }} accessibilityLiveRegion="polite">
-          <T style={{ fontFamily: fonts.displayMedium, fontSize: 22, lineHeight: 27, color: '#4A2E1F', textAlign: 'center' }}>{label}</T>
+        // Fills the circle's box and centers in both directions, so the text sits exactly in the middle.
+        <View style={[StyleSheet.absoluteFill, { alignItems: 'center', justifyContent: 'center', paddingHorizontal: size * 0.14 }]} accessibilityLiveRegion="polite">
+          <Animated.View key={label} entering={reduce ? undefined : FadeIn.duration(450)}>
+            <T style={{ fontFamily: fonts.displayMedium, fontSize: 22, lineHeight: 28, color: '#4A2E1F', textAlign: 'center' }}>{label}</T>
+          </Animated.View>
           {pattern !== 'free' && running ? (
-            <T v="monoBold" style={{ color: '#4A2E1F', fontSize: 15, marginTop: 2 }}>
+            <T v="monoBold" style={{ color: '#4A2E1F', fontSize: 15, lineHeight: 20, textAlign: 'center', minWidth: 24, fontVariant: ['tabular-nums'] }}>
               {Math.ceil(phase.remainingMs / 1000)}
             </T>
           ) : null}

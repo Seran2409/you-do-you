@@ -3,7 +3,7 @@ import { router, usePathname } from 'expo-router';
 import { useEffect, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
-import Animated, { Extrapolation, interpolate, useAnimatedScrollHandler, useAnimatedStyle } from 'react-native-reanimated';
+import Animated, { Extrapolation, FadeIn, interpolate, useAnimatedScrollHandler, useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useStore } from '../../data/AppStore';
 import { headerDate } from '../../i18n/format';
@@ -11,8 +11,9 @@ import { useTheme } from '../../theme/ThemeProvider';
 import { fonts, GUTTER, MAX_WIDTH } from '../../theme/tokens';
 import { Glass, Logo, withAlpha } from '../../ui/graphics';
 import { Icon, type IconName } from '../../ui/Icon';
+import { useVisibleArea } from '../../ui/keyboard';
 import { useSheet } from '../../ui/overlays';
-import { IconButton } from '../../ui/primitives';
+import { IconButton, PressScale } from '../../ui/primitives';
 import { pageScroll } from '../../ui/scroll';
 import { T } from '../../ui/Text';
 import { SettingsSheet } from '../settings/SettingsSheet';
@@ -99,22 +100,19 @@ export function TabBar() {
           {TABS.map((tab) => {
             const on = path === tab.href;
             return (
-              <Pressable
+              <PressScale
                 key={tab.href}
+                scaleTo={0.94}
                 accessibilityRole="tab"
                 aria-selected={on}
                 onPress={() => router.navigate(tab.href)}
-                style={({ pressed }) => [
-                  { flex: 1, alignItems: 'center', gap: 2, paddingTop: 7, paddingBottom: 5, borderRadius: 26 },
-                  on && { backgroundColor: c.tabActive },
-                  pressed && { transform: [{ scale: 0.95 }] },
-                ]}
+                style={[{ flex: 1, alignItems: 'center', gap: 2, paddingTop: 7, paddingBottom: 5, borderRadius: 26 }, on && { backgroundColor: c.tabActive }]}
               >
                 <Icon name={tab.icon} size={23} color={on ? c.tabActiveFg : c.muted} />
                 <T v="tiny" color={on ? c.tabActiveFg : c.muted} style={{ fontSize: 11, lineHeight: 14, fontFamily: fonts.bodyBold }} numberOfLines={1}>
                   {t(`tabs.${tab.key}`)}
                 </T>
-              </Pressable>
+              </PressScale>
             );
           })}
         </View>
@@ -127,6 +125,8 @@ export function TabBar() {
 export function Screen({ children, fab }: { children: ReactNode; fab?: { label: string; a11y: string; onPress: () => void } }) {
   const { c } = useTheme();
   const insets = useSafeAreaInsets();
+  // Web: room to scroll a field above the keyboard (see ui/keyboard).
+  const keyboard = useVisibleArea()?.keyboard ?? 0;
   const onScroll = useAnimatedScrollHandler((e) => {
     pageScroll.value = e.contentOffset.y;
   });
@@ -136,16 +136,18 @@ export function Screen({ children, fab }: { children: ReactNode; fab?: { label: 
   return (
     <View style={{ flex: 1 }}>
       <Animated.ScrollView
+        entering={FadeIn.duration(240)}
         onScroll={onScroll}
         scrollEventThrottle={16}
         keyboardShouldPersistTaps="handled"
+        automaticallyAdjustKeyboardInsets
         contentContainerStyle={{
           width: '100%',
           maxWidth: MAX_WIDTH,
           alignSelf: 'center',
           paddingHorizontal: GUTTER,
           paddingTop: insets.top + TOPBAR_H + 6,
-          paddingBottom: 150 + insets.bottom,
+          paddingBottom: 150 + insets.bottom + keyboard,
           gap: 22,
         }}
       >
@@ -169,30 +171,28 @@ function Fab({ label, a11y, onPress }: { label: string; a11y: string; onPress: (
   return (
     <View pointerEvents="box-none" style={{ position: 'absolute', left: 0, right: 0, bottom: 92 + insets.bottom, zIndex: 25 }}>
       <View pointerEvents="box-none" style={{ width: '100%', maxWidth: MAX_WIDTH, alignSelf: 'center', alignItems: 'flex-end', paddingHorizontal: GUTTER }}>
-        <Pressable
+        <PressScale
+          scaleTo={0.94}
           onPress={onPress}
           accessibilityRole="button"
           accessibilityLabel={a11y}
-          style={({ pressed }) => [
-            {
-              height: 54,
-              paddingLeft: 16,
-              paddingRight: 20,
-              borderRadius: 17,
-              backgroundColor: c.fabBg,
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 8,
-              boxShadow: c.glassShadow,
-            },
-            pressed && { transform: [{ scale: 0.95 }] },
-          ]}
+          style={{
+            height: 54,
+            paddingLeft: 16,
+            paddingRight: 20,
+            borderRadius: 17,
+            backgroundColor: c.fabBg,
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 8,
+            boxShadow: c.glassShadow,
+          }}
         >
           <Icon name="plus" size={22} color={c.fabFg} strokeWidth={2.6} />
           <T v="bold" color={c.fabFg}>
             {label}
           </T>
-        </Pressable>
+        </PressScale>
       </View>
     </View>
   );

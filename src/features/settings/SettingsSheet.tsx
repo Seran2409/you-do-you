@@ -287,7 +287,7 @@ export function SettingsSheet({ close }: { close: () => void }) {
             multiline
             placeholder={t('settings.pastePlaceholder')}
             accessibilityLabel={t('settings.pastePlaceholder')}
-            style={{ height: 84, paddingTop: 12, textAlignVertical: 'top', fontSize: 14 }}
+            style={{ height: 84, paddingTop: 12, textAlignVertical: 'top' }}
           />
           {paste.trim() ? <Button small kind="ghost" label={t('settings.check')} onPress={() => askImport(paste)} style={{ alignSelf: 'flex-start' }} /> : null}
           <Button small kind="dangerGhost" icon="trash" label={t('settings.deleteAll')} onPress={askDeleteAll} style={{ alignSelf: 'flex-start' }} />
