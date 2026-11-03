@@ -223,7 +223,7 @@
       "jahr": "im Jahr"
     },
     "goalTitle": "Tagesziel",
-    "goalText": "So viele Routinen willst du pro Tag schaffen. Erreicht gibt es +{{xp}} XP.",
+    "goalText": "So oft willst du pro Tag eine Tagesroutine abhaken. Erreicht gibt es +{{xp}} XP.",
     "goalDec": "Tagesziel verringern",
     "goalInc": "Tagesziel erhöhen",
     "ringToday": "heute",
@@ -284,7 +284,10 @@
       "midday": "Mittags",
       "evening": "Abends",
       "now": "jetzt"
-    }
+    },
+    "overallTitle": "Insgesamt geschafft",
+    "overallSum": "{{met}} von {{total}}",
+    "todayOf": "heute {{count}} von {{target}}"
   },
   "routineForm": {
     "newTitle": "Neue Routine",
@@ -303,7 +306,10 @@
       "jahr": "im Jahr"
     },
     "errTitle": "Gib der Routine einen Namen.",
-    "slot": "Tageszeit"
+    "slot": "Tageszeit",
+    "slotsHint": "Wähle bis zu {{count}} Tageszeiten, die Wiederholungen werden darauf verteilt.",
+    "slotsSplit": "Aufgeteilt: {{list}}",
+    "slotShare": "{{slot}} {{count}}×"
   },
   "level": {
     "total": "Level {{level}} · {{xp}} XP gesamt",

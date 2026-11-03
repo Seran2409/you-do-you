@@ -223,7 +223,7 @@
       "jahr": "a year"
     },
     "goalTitle": "Daily goal",
-    "goalText": "How many routines you want to do each day. Reach it for +{{xp}} XP.",
+    "goalText": "How often you want to tick off a daily routine each day. Reach it for +{{xp}} XP.",
     "goalDec": "Lower daily goal",
     "goalInc": "Raise daily goal",
     "ringToday": "today",
@@ -284,7 +284,10 @@
       "midday": "Midday",
       "evening": "Evening",
       "now": "now"
-    }
+    },
+    "overallTitle": "Done overall",
+    "overallSum": "{{met}} of {{total}}",
+    "todayOf": "{{count}} of {{target}} today"
   },
   "routineForm": {
     "newTitle": "New routine",
@@ -303,7 +306,10 @@
       "jahr": "for the year"
     },
     "errTitle": "Give the routine a name.",
-    "slot": "Time of day"
+    "slot": "Time of day",
+    "slotsHint": "Pick up to {{count}} times of day; the repetitions are spread across them.",
+    "slotsSplit": "Split: {{list}}",
+    "slotShare": "{{slot}} {{count}}×"
   },
   "level": {
     "total": "Level {{level}} · {{xp}} XP total",

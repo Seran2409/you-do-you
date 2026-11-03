@@ -17,6 +17,7 @@ export interface Stats {
   /** "routineId|periodKey" -> check-ins in that period */
   pc: Map<string, number>;
   checkins: number;
+  /** Check-ins of daily routines per day; the daily goal counts only these. */
   checkinsByDay: Map<DayKey, number>;
   perfectDays: number;
   perfect: Set<DayKey>;
@@ -93,7 +94,8 @@ export function compute(data: ComputeInput, today: DayKey, dailyGoal: number, mi
       if (!rt || c <= 0) continue;
       add(dk, (ROUT_XP[rt.scope] ?? 10) * c);
       checkins += c;
-      dayCount += c;
+      // The daily goal is about daily routines; weekly, monthly and yearly ones have their own targets.
+      if (rt.scope === 'tag') dayCount += c;
       const k = rid + '|' + periodKey(rt.scope, dk);
       const before = pc.get(k) || 0;
       const after = before + c;

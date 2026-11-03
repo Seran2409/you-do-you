@@ -45,6 +45,16 @@ test('to-do with subtasks, routine, tabs, language switch and reload', async ({ 
   await expect(page.getByRole('heading', { name: /Morgens/ })).toBeVisible();
   await expect(page.getByRole('heading', { name: /Jederzeit/ })).toBeVisible();
 
+  // Twice a day, morning and evening: the routine shows up in both groups.
+  await page.getByRole('button', { name: 'Neue Routine' }).click();
+  await page.getByRole('textbox', { name: 'Was willst du regelmäßig tun?' }).fill('Zähne putzen');
+  await page.getByRole('button', { name: 'Mehr' }).last().click();
+  await page.getByRole('checkbox', { name: 'Morgens' }).click();
+  await page.getByRole('checkbox', { name: 'Abends' }).click();
+  await expect(page.getByText('Aufgeteilt: Morgens 1× und Abends 1×')).toBeVisible();
+  await page.getByRole('button', { name: 'Anlegen' }).click();
+  await expect(page.getByText('Zähne putzen', { exact: true })).toHaveCount(2);
+
   // Level: 10 (to-do) + 2×5 (subtasks) + 10 (routine) = 30 XP.
   await page.getByRole('tab', { name: 'Level' }).click();
   await expect(page.getByText('Level 1 · 30 XP gesamt')).toBeVisible();
@@ -70,7 +80,7 @@ test('meditation: one minute, mood, mindful minutes and XP', async ({ page }) =>
   await page.getByRole('button', { name: "Los geht's" }).click();
 
   await page.getByRole('tab', { name: 'Meditation' }).click();
-  await page.getByRole('button', { name: '1', exact: true }).click();
+  await page.getByRole('radio', { name: '1', exact: true }).click();
   await page.getByRole('button', { name: 'Meditieren' }).last().click();
   await expect(page.getByText('Einatmen')).toBeVisible();
 

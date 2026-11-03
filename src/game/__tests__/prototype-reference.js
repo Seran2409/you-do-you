@@ -2,6 +2,7 @@
  * Verbatim copy of the XP computation from the prototype (dont-fall-for-traps.html),
  * used only to prove the new src/game gives identical results. Do not "fix" this file.
  * Changes: wrapped in a function, state S and goal() are passed in, ACH reduced to keys + predicates.
+ * Rule change (Nov 2026): the daily goal counts only check-ins of daily routines.
  */
 export function prototypeCompute(input, dailyGoal) {
   const S = {
@@ -61,7 +62,7 @@ export function prototypeCompute(input, dailyGoal) {
       const doc=S.days.get(dk)||{};const r=doc.routines||{};const date=parseYmd(dk);let dayCount=0;
       for(const rid of Object.keys(r)){
         const c=Number(r[rid])||0;const rt=S.routines.get(rid);if(!rt||c<=0)continue;
-        add(dk,(ROUT_XP[rt.scope]||10)*c);checkins+=c;dayCount+=c;
+        add(dk,(ROUT_XP[rt.scope]||10)*c);checkins+=c;if(rt.scope==='tag')dayCount+=c;
         const k=rid+'|'+periodKey(rt.scope,date);const before=pc.get(k)||0;const after=before+c;pc.set(k,after);
         const target=Math.max(1,rt.target||1);
         if(before<target&&after>=target){add(dk,ROUT_BONUS[rt.scope]||0);met[rt.scope]++;}

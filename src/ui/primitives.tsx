@@ -165,12 +165,26 @@ export function LinkButton({ label, onPress, style }: { label: string; onPress: 
   );
 }
 
-export function Chip({ label, onPress, icon, selected }: { label: string; onPress: () => void; icon?: IconName; selected?: boolean }) {
+/** Pill button. With `selected` it is a choice: a checkbox, or a radio button with `kind="radio"`. */
+export function Chip({
+  label,
+  onPress,
+  icon,
+  selected,
+  kind = 'checkbox',
+}: {
+  label: string;
+  onPress: () => void;
+  icon?: IconName;
+  selected?: boolean;
+  kind?: 'checkbox' | 'radio';
+}) {
   const { c } = useTheme();
   return (
     <Press
       onPress={onPress}
-      accessibilityRole="button"
+      accessibilityRole={selected === undefined ? 'button' : kind}
+      aria-checked={selected}
       style={[
         styles.chip,
         { backgroundColor: selected ? c.wPlum : c.surface, borderColor: selected ? c.plumText : c.line },

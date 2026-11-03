@@ -40,6 +40,12 @@ export interface Routine {
   scope: RoutineScope;
   /** Times per period, >= 1. */
   target: number;
+  /**
+   * Times of day, in day order. A daily routine done several times a day can have one per repetition
+   * (e.g. morning and evening); empty or missing means any time.
+   */
+  slots?: RoutineSlot[];
+  /** Single time of day from before multiple slots existed; read through slotsOf(). */
   slot?: RoutineSlot;
   archived?: boolean;
   createdAt: string;
@@ -67,6 +73,8 @@ export interface Day {
   date: DayKey;
   /** routineId -> number of check-ins on this day */
   routines: Record<string, number>;
+  /** routineId -> time of day of each check-in, for routines spread over several times of day */
+  slotLog?: Record<string, RoutineSlot[]>;
 }
 
 export type Language = 'system' | 'de' | 'en';

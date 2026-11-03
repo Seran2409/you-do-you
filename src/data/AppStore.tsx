@@ -3,8 +3,9 @@ import { AppState } from 'react-native';
 import { compute, type Stats } from '../game/compute';
 import { todayKey } from '../game/dates';
 import * as M from '../game/mutations';
+import { isSplit, isToggleOnly, slotParts } from '../game/routines';
 import { DEFAULT_GOAL, DEFAULT_MINDFUL_GOAL, MAX_GOAL } from '../game/rules';
-import type { AppData, Day, Routine, Session, Settings, Todo } from '../game/types';
+import type { AppData, Day, Routine, RoutineSlot, Session, Settings, Todo } from '../game/types';
 import i18n from '../i18n';
 import { emit } from './feedback';
 import { defaultSettings, emptyAppData, normalizeImport, toExport } from './schema';
@@ -12,7 +13,7 @@ import { localStore } from './storage';
 import { SETTINGS_ID, type Collection } from './storage.types';
 
 export type TodoDraft = Omit<Todo, 'id' | 'createdAt' | 'order' | 'done' | 'doneOn'> & Partial<Pick<Todo, 'done' | 'doneOn'>>;
-export type RoutineDraft = Pick<Routine, 'title' | 'emoji' | 'scope' | 'target' | 'slot'>;
+export type RoutineDraft = Pick<Routine, 'title' | 'emoji' | 'scope' | 'target' | 'slots'>;
 
 interface Store {
   ready: boolean;
@@ -30,8 +31,9 @@ interface Store {
     moveTodoToCurrent(id: string): void;
     moveOverdueToToday(): number;
     deleteTodo(id: string): void;
-    incRoutine(id: string): void;
-    decRoutine(id: string): void;
+    /** One check-in; `slot` is the time-of-day part tapped for routines spread over several times of day. */
+    incRoutine(id: string, slot?: RoutineSlot): void;
+    decRoutine(id: string, slot?: RoutineSlot): void;
     saveRoutine(id: string | null, draft: RoutineDraft): string;
     deleteRoutine(id: string): void;
     saveSettings(patch: Partial<Settings>): void;
@@ -191,25 +193,24 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
           return { next: { ...d, todos }, writes: [['todos', id, null]] };
         }, false);
       },
-      incRoutine(id) {
+      incRoutine(id, slot) {
         commit((d) => {
           const t = todayKey();
           const r = d.routines[id];
           if (!r) return null;
           const cur = d.days[t];
-          // Daily routine with target 1 toggles like a checkbox.
-          const day: Day | null =
-            r.scope === 'tag' && Math.max(1, r.target) === 1 && (cur?.routines?.[id] || 0) > 0
-              ? M.decRoutine(cur, t, id)
-              : M.incRoutine(cur, t, id);
+          const part = slot && isSplit(r) ? slotParts(r, cur).find((p) => p.slot === slot) : undefined;
+          // A daily routine with target 1, or a time-of-day part with a single repetition, toggles like a checkbox.
+          const undo = part ? part.share === 1 && part.done >= 1 : isToggleOnly(r) && (cur?.routines?.[id] || 0) > 0;
+          const day: Day | null = undo ? M.decRoutine(cur, t, id, slot) : M.incRoutine(cur, t, id, part ? slot : undefined);
           if (!day) return null;
           return { next: { ...d, days: { ...d.days, [t]: day } }, writes: [['days', t, day]] };
         });
       },
-      decRoutine(id) {
+      decRoutine(id, slot) {
         commit((d) => {
           const t = todayKey();
-          const day = M.decRoutine(d.days[t], t, id);
+          const day = M.decRoutine(d.days[t], t, id, slot);
           if (!day) return null;
           return { next: { ...d, days: { ...d.days, [t]: day } }, writes: [['days', t, day]] };
         }, false);
@@ -221,6 +222,9 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
           const r: Routine = prev
             ? { ...prev, ...draft }
             : { ...draft, id: newId, createdAt: new Date().toISOString(), order: Date.now() };
+          // The form always writes `slots`; the older single `slot` and an empty list are dropped.
+          delete r.slot;
+          if (!r.slots?.length) delete r.slots;
           return { next: { ...d, routines: { ...d.routines, [r.id]: r } }, writes: [['routines', r.id, stripId(r)]] };
         });
         return newId;

@@ -1,6 +1,6 @@
 import type { Stats } from './compute';
 import { periodKey, shiftPeriod } from './dates';
-import type { AppData, DayKey, Routine, RoutineScope, RoutineSlot } from './types';
+import type { AppData, Day, DayKey, Routine, RoutineScope, RoutineSlot } from './types';
 
 export const targetOf = (r: Routine) => Math.max(1, r.target || 1);
 
@@ -65,6 +65,54 @@ export function openRoutineCount(st: Stats, list: Routine[], scope: RoutineScope
 export const ROUTINE_SLOTS: RoutineSlot[] = ['morning', 'midday', 'evening'];
 export type SlotGroupKey = RoutineSlot | 'any';
 
+/** Times of day of a routine in day order (also reads the older single `slot`). */
+export function slotsOf(r: Pick<Routine, 'slots' | 'slot'>): RoutineSlot[] {
+  const picked = r.slots ?? (r.slot ? [r.slot] : []);
+  return ROUTINE_SLOTS.filter((s) => picked.includes(s));
+}
+
+/** A daily routine spread over several times of day shows one part per time of day. */
+export const isSplit = (r: Routine) => r.scope === 'tag' && slotsOf(r).length > 1;
+
+export interface SlotPart {
+  slot: RoutineSlot;
+  /** Repetitions that belong to this time of day. */
+  share: number;
+  /** Check-ins done for it today. */
+  done: number;
+}
+
+/**
+ * Today's parts of a split routine. The repetitions are spread as evenly as possible (earlier times
+ * get the extra ones); check-ins count for the time of day they were made in.
+ */
+export function slotParts(r: Routine, day: Day | undefined): SlotPart[] {
+  const slots = slotsOf(r);
+  if (!slots.length) return [];
+  const target = targetOf(r);
+  const base = Math.floor(target / slots.length);
+  const extra = target % slots.length;
+  const parts = slots.map((slot, i) => ({ slot, share: base + (i < extra ? 1 : 0), done: 0 }));
+  for (const s of day?.slotLog?.[r.id] ?? []) {
+    const p = parts.find((x) => x.slot === s);
+    if (p) p.done++;
+  }
+  // Check-ins without a recorded time of day (made before the routine was split) fill the parts in day order.
+  let loose = Math.max(0, (day?.routines?.[r.id] || 0) - parts.reduce((a, p) => a + p.done, 0));
+  for (const p of parts) {
+    const take = Math.min(loose, Math.max(0, p.share - p.done));
+    p.done += take;
+    loose -= take;
+  }
+  return parts;
+}
+
+/** One row in a routine list: a routine, or one time-of-day part of a split routine. */
+export interface RoutineEntry {
+  routine: Routine;
+  slot?: RoutineSlot;
+}
+
 /** Morning until 11, midday until 17, evening after that (and through the night). */
 export function slotAt(hour: number): RoutineSlot {
   if (hour >= 4 && hour < 11) return 'morning';
@@ -76,8 +124,12 @@ export function slotAt(hour: number): RoutineSlot {
  * Groups routines by time of day in the order morning, midday, evening, any time.
  * Returns a single 'any' group when no routine has a time of day, so the list stays flat.
  */
-export function groupBySlot(list: Routine[]): { key: SlotGroupKey; items: Routine[] }[] {
-  if (!list.some((r) => r.slot)) return list.length ? [{ key: 'any', items: list }] : [];
+export function groupBySlot(list: Routine[]): { key: SlotGroupKey; items: RoutineEntry[] }[] {
+  const entries: RoutineEntry[] = list.flatMap((r) => {
+    const slots = slotsOf(r);
+    return isSplit(r) ? slots.map((slot) => ({ routine: r, slot })) : [{ routine: r, slot: slots[0] }];
+  });
+  if (!entries.some((e) => e.slot)) return entries.length ? [{ key: 'any', items: entries }] : [];
   const keys: SlotGroupKey[] = [...ROUTINE_SLOTS, 'any'];
-  return keys.map((key) => ({ key, items: list.filter((r) => (r.slot ?? 'any') === key) })).filter((g) => g.items.length);
+  return keys.map((key) => ({ key, items: entries.filter((e) => (e.slot ?? 'any') === key) })).filter((g) => g.items.length);
 }

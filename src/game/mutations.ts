@@ -1,5 +1,5 @@
 import { periodKey } from './dates';
-import type { Day, DayKey, Todo } from './types';
+import type { Day, DayKey, RoutineSlot, Todo } from './types';
 
 /*
  * Pure state transitions. Each returns a new object; callers persist it.
@@ -55,17 +55,31 @@ export function hasEarnedXp(t: Todo): boolean {
   return t.done || t.subs.some((s) => s.done);
 }
 
-export function incRoutine(day: Day | undefined, today: DayKey, routineId: string): Day {
-  const routines = { ...(day?.routines || {}) };
-  routines[routineId] = (routines[routineId] || 0) + 1;
-  return { date: today, routines };
+/** Day document with the slot log written back only when it has entries. */
+function withLog(today: DayKey, routines: Record<string, number>, slotLog: Record<string, RoutineSlot[]>): Day {
+  for (const [rid, log] of Object.entries(slotLog)) if (!log.length || !routines[rid]) delete slotLog[rid];
+  return Object.keys(slotLog).length ? { date: today, routines, slotLog } : { date: today, routines };
 }
 
-/** Take back the last check-in of today. */
-export function decRoutine(day: Day | undefined, today: DayKey, routineId: string): Day | null {
+/** One check-in; `slot` records the time of day for routines spread over several times of day. */
+export function incRoutine(day: Day | undefined, today: DayKey, routineId: string, slot?: RoutineSlot): Day {
+  const routines = { ...(day?.routines || {}) };
+  routines[routineId] = (routines[routineId] || 0) + 1;
+  const slotLog = { ...(day?.slotLog || {}) };
+  if (slot) slotLog[routineId] = [...(slotLog[routineId] || []), slot];
+  return withLog(today, routines, slotLog);
+}
+
+/** Take back the last check-in of today (of that time of day, if given). */
+export function decRoutine(day: Day | undefined, today: DayKey, routineId: string, slot?: RoutineSlot): Day | null {
   if (!day?.routines?.[routineId]) return null;
   const routines = { ...day.routines };
   routines[routineId]--;
   if (routines[routineId] <= 0) delete routines[routineId];
-  return { date: today, routines };
+  const slotLog = { ...(day.slotLog || {}) };
+  const log = [...(slotLog[routineId] || [])];
+  const i = slot ? log.lastIndexOf(slot) : log.length - 1;
+  if (i >= 0) log.splice(i, 1);
+  slotLog[routineId] = log;
+  return withLog(today, routines, slotLog);
 }

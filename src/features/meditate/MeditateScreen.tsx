@@ -88,7 +88,7 @@ export default function MeditateScreen() {
         </View>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}>
           {PRESETS.map((m) => (
-            <Chip key={m} label={`${m}`} selected={med.minutes === m} onPress={() => setMed({ minutes: m })} />
+            <Chip key={m} kind="radio" label={`${m}`} selected={med.minutes === m} onPress={() => setMed({ minutes: m })} />
           ))}
         </View>
         <View style={{ gap: 8 }}>

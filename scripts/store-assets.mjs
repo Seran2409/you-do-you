@@ -94,7 +94,7 @@ function docs(lang) {
   for (let i = 1; i <= 46; i++) {
     put('todos', 'h' + i, { title: 'done', scope: 'ewig', period: null, diff: 1 + (i % 3), subs: [], done: true, doneOn: day(-((i * 2) % 90) - 1), archived: true, createdAt: '2026-08-01', order: 100 + i });
   }
-  s.routines.forEach(([id, title, emoji, scope, target, slot], i) => put('routines', id, { title, emoji, scope, target, ...(slot ? { slot } : {}), createdAt: '2026-08-01', order: i }));
+  s.routines.forEach(([id, title, emoji, scope, target, slot], i) => put('routines', id, { title, emoji, scope, target, ...(slot ? { slots: [slot] } : {}), createdAt: '2026-08-01', order: i }));
   for (let i = -100; i <= 0; i++) {
     if (i < -14 && (i * 7) % 5 === 0) continue;
     const r = { r4: 1, r1: i === 0 ? 3 : 3 + ((((i * 13) % 6) + 6) % 6), r2: i === 0 ? 0 : i % 3 ? 1 : 0 };

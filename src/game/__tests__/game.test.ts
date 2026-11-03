@@ -21,6 +21,11 @@ import {
   toggleSub,
   groupBySlot,
   slotAt,
+  slotsOf,
+  slotParts,
+  isSplit,
+  incRoutine,
+  decRoutine,
 } from '../index';
 import { normalizeImport } from '../../data/schema';
 import { emptyData, randomHistory, routine, todo } from './fixtures';
@@ -228,10 +233,10 @@ describe('time of day', () => {
 
   it('groups routines by time of day, flat when none has one', () => {
     const a = routine({ id: 'a' });
-    const b = routine({ id: 'b', slot: 'evening' });
+    const b = routine({ id: 'b', slots: ['evening'] });
     const m = routine({ id: 'm', slot: 'morning' });
-    expect(groupBySlot([a])).toEqual([{ key: 'any', items: [a] }]);
-    expect(groupBySlot([a, b, m]).map((g) => [g.key, g.items.map((r) => r.id)])).toEqual([
+    expect(groupBySlot([a])).toEqual([{ key: 'any', items: [{ routine: a, slot: undefined }] }]);
+    expect(groupBySlot([a, b, m]).map((g) => [g.key, g.items.map((e) => e.routine.id)])).toEqual([
       ['morning', ['m']],
       ['evening', ['b']],
       ['any', ['a']],
@@ -239,9 +244,62 @@ describe('time of day', () => {
     expect(groupBySlot([])).toEqual([]);
   });
 
-  it('keeps a valid time of day on import and drops unknown ones', () => {
-    const data = normalizeImport({ routines: { a: { title: 'A', scope: 'tag', target: 1, slot: 'evening' }, b: { title: 'B', slot: 'night' } } });
-    expect(data.routines.a.slot).toBe('evening');
-    expect(data.routines.b.slot).toBeUndefined();
+  it('shows a routine spread over several times of day once per time of day', () => {
+    const teeth = routine({ id: 't', target: 2, slots: ['evening', 'morning'] });
+    expect(slotsOf(teeth)).toEqual(['morning', 'evening']);
+    expect(groupBySlot([teeth]).map((g) => [g.key, g.items.map((e) => e.slot)])).toEqual([
+      ['morning', ['morning']],
+      ['evening', ['evening']],
+    ]);
+    // Weekly routines keep a single time of day.
+    expect(isSplit(routine({ id: 'w', scope: 'woche', target: 2, slots: ['morning', 'evening'] }))).toBe(false);
+  });
+
+  it('spreads repetitions over the times of day and counts check-ins where they were made', () => {
+    const water = routine({ id: 'w', target: 8, slots: ['morning', 'midday', 'evening'] });
+    expect(slotParts(water, undefined).map((p) => p.share)).toEqual([3, 3, 2]);
+
+    const teeth = routine({ id: 't', target: 2, slots: ['morning', 'evening'] });
+    // Only the evening check-in done: the morning part stays open.
+    let day = incRoutine(undefined, TODAY, 't', 'evening');
+    expect(slotParts(teeth, day).map((p) => [p.slot, p.done])).toEqual([
+      ['morning', 0],
+      ['evening', 1],
+    ]);
+    day = incRoutine(day, TODAY, 't', 'morning');
+    expect(day.routines.t).toBe(2);
+    // Undoing the evening one removes exactly that check-in.
+    const back = decRoutine(day, TODAY, 't', 'evening')!;
+    expect(back.routines.t).toBe(1);
+    expect(back.slotLog).toEqual({ t: ['morning'] });
+    // Older check-ins without a time of day fill the parts in day order.
+    expect(slotParts(teeth, { date: TODAY, routines: { t: 1 } }).map((p) => p.done)).toEqual([1, 0]);
+  });
+
+  it('reads the older single time of day and keeps valid ones on import', () => {
+    const data = normalizeImport({
+      routines: {
+        a: { title: 'A', scope: 'tag', target: 1, slot: 'evening' },
+        b: { title: 'B', slot: 'night' },
+        c: { title: 'C', scope: 'tag', target: 2, slots: ['evening', 'dawn', 'morning'] },
+      },
+      days: { [TODAY]: { date: TODAY, routines: { c: 1 }, slotLog: { c: ['evening', 'noon'], gone: ['morning'] } } },
+    });
+    expect(data.routines.a.slots).toEqual(['evening']);
+    expect(data.routines.b.slots).toBeUndefined();
+    expect(data.routines.c.slots).toEqual(['morning', 'evening']);
+    expect(data.days[TODAY].slotLog).toEqual({ c: ['evening'] });
+  });
+});
+
+describe('daily goal', () => {
+  it('counts only daily routines; weekly ones have their own target', () => {
+    const data = emptyData();
+    data.routines = { d: routine({ id: 'd' }), w: routine({ id: 'w', scope: 'woche', target: 3 }) };
+    data.days = { [TODAY]: { date: TODAY, routines: { d: 1, w: 2 } } };
+    const st = compute(data, TODAY, 3);
+    expect(st.checkinsByDay.get(TODAY)).toBe(1);
+    expect(st.perfectDays).toBe(0);
+    expect(compute(data, TODAY, 1).perfectDays).toBe(1);
   });
 });

@@ -1,11 +1,13 @@
 import { router } from 'expo-router';
+import { useRef, type ComponentRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, View } from 'react-native';
 import { useStore } from '../../data/AppStore';
+import type { Stats } from '../../game/compute';
 import { daysLeft, hourNow } from '../../game/dates';
 import { GOAL_BONUS, MAX_GOAL, ROUT_BONUS, ROUT_XP } from '../../game/rules';
-import { groupBySlot, isToggleOnly, periodCount, routineReview, slotAt, targetOf, todayCount, type SlotGroupKey } from '../../game/routines';
-import type { Routine } from '../../game/types';
+import { groupBySlot, isSplit, isToggleOnly, periodCount, routineReview, slotAt, slotParts, targetOf, todayCount, type RoutineEntry, type SlotGroupKey } from '../../game/routines';
+import type { Day, DayKey, Routine, RoutineSlot } from '../../game/types';
 import { SEP, shortPeriod } from '../../i18n/format';
 import { useTheme } from '../../theme/ThemeProvider';
 import { fonts, radius } from '../../theme/tokens';
@@ -18,7 +20,8 @@ import { useUi } from '../../ui/uiState';
 import { ConfirmDelete } from '../todos/sheets';
 import { RoutineForm } from './RoutineForm';
 
-export function RoutineCard({ routine: r, mini }: { routine: Routine; mini?: boolean }) {
+/** A routine, or with `slot` one time-of-day part of a routine spread over several times of day. */
+export function RoutineCard({ routine: r, slot, mini }: { routine: Routine; slot?: RoutineSlot; mini?: boolean }) {
   const { t } = useTranslation();
   const { c } = useTheme();
   const { data, stats, today, actions } = useStore();
@@ -30,24 +33,30 @@ export function RoutineCard({ routine: r, mini }: { routine: Routine; mini?: boo
   const todayC = todayCount(data.days, r, today);
   const dl = daysLeft(r.scope, today);
   const per = t(`routines.per.${r.scope}`);
-  const toggleOnly = isToggleOnly(r);
-  const expanded = !mini && ui.expanded.has(r.id);
+  const part = slot && isSplit(r) ? slotParts(r, data.days[today]).find((p) => p.slot === slot) : undefined;
+  // A part with a single repetition ticks like a checkbox, just like a daily routine done once.
+  const toggleOnly = part ? part.share === 1 : isToggleOnly(r);
+  const done = part ? part.done >= part.share : met;
+  const expandKey = part ? r.id + '|' + part.slot : r.id;
+  const expanded = !mini && ui.expanded.has(expandKey);
 
-  const status = met
-    ? count > target
-      ? t('routines.metTimes', { count })
-      : t('routines.met')
-    : r.scope === 'tag'
-      ? t('routines.status', { target, per, remaining: target - count })
-      : t('routines.statusDays', { target, per, remaining: target - count, count: dl });
+  const status = part
+    ? (done ? t('routines.met') + SEP : '') + t('routines.todayOf', { count, target })
+    : met
+      ? count > target
+        ? t('routines.metTimes', { count })
+        : t('routines.met')
+      : r.scope === 'tag'
+        ? t('routines.status', { target, per, remaining: target - count })
+        : t('routines.statusDays', { target, per, remaining: target - count, count: dl });
 
-  const greenish = (a: string, b: string) => (met ? a : b);
+  const greenish = (a: string, b: string) => (done ? a : b);
 
   return (
     <View
       style={{
         backgroundColor: c.surface,
-        borderColor: met ? c.go + '73' : c.line,
+        borderColor: done ? c.go + '73' : c.line,
         borderWidth: 1,
         borderRadius: radius.r,
         boxShadow: c.shadow,
@@ -74,41 +83,41 @@ export function RoutineCard({ routine: r, mini }: { routine: Routine; mini?: boo
           style={{ flex: 1, minWidth: 0, gap: 3 }}
           accessibilityRole="button"
           aria-expanded={mini ? undefined : expanded}
-          accessibilityLabel={`${r.title}, ${status}, ${t('routines.progress', { count, target })}`}
-          onPress={() => (mini ? router.navigate('/routines') : ui.toggleExpanded(r.id))}
+          accessibilityLabel={`${r.title}${part ? ', ' + t(`routines.slot.${part.slot}`) : ''}, ${status}, ${t('routines.progress', { count, target })}`}
+          onPress={() => (mini ? router.navigate('/routines') : ui.toggleExpanded(expandKey))}
         >
           <T v="bold">{r.title}</T>
-          <T v="tiny" color={met ? c.go : c.muted} style={met && { fontFamily: fonts.bodyBold }}>
+          <T v="tiny" color={done ? c.go : c.muted} style={done && { fontFamily: fonts.bodyBold }}>
             {status}
           </T>
-          <SegBar target={target} count={count} met={met} />
+          {part ? <SegBar target={part.share} count={part.done} met={done} /> : <SegBar target={target} count={count} met={met} />}
         </Pressable>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-          {todayC > 0 && !toggleOnly ? <IconButton icon="minus" label={t('routines.undo')} onPress={() => actions.decRoutine(r.id)} /> : null}
+          {(part ? part.done : todayC) > 0 && !toggleOnly ? <IconButton icon="minus" label={t('routines.undo')} onPress={() => actions.decRoutine(r.id, part?.slot)} /> : null}
           <PressScale
             scaleTo={0.9}
-            onPress={() => actions.incRoutine(r.id)}
+            onPress={() => actions.incRoutine(r.id, part?.slot)}
             accessibilityRole={toggleOnly ? 'checkbox' : 'button'}
-            aria-checked={toggleOnly ? todayC > 0 : undefined}
+            aria-checked={toggleOnly ? done : undefined}
             accessibilityLabel={t('routines.inc', { title: r.title, xp: ROUT_XP[r.scope] })}
             style={{
               height: 44,
               minWidth: 58,
               paddingHorizontal: 12,
               borderRadius: 13,
-              backgroundColor: met ? c.go : c.accent,
+              backgroundColor: done ? c.go : c.accent,
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'center',
               gap: 4,
             }}
           >
-            {met && toggleOnly ? (
+            {done && toggleOnly ? (
               <Icon name="check" size={18} color={c.onGo} strokeWidth={3} />
             ) : (
               <>
-                <Icon name="plus" size={16} color={met ? c.onGo : c.onAccent} />
-                <T v="monoBold" color={met ? c.onGo : c.onAccent} style={{ fontSize: 14 }}>
+                <Icon name="plus" size={16} color={done ? c.onGo : c.onAccent} />
+                <T v="monoBold" color={done ? c.onGo : c.onAccent} style={{ fontSize: 14 }}>
                   1
                 </T>
               </>
@@ -127,6 +136,7 @@ function Lookback({ routine: r, onEdit, onDelete }: { routine: Routine; onEdit: 
   const { stats, today } = useStore();
   const rv = routineReview(stats, r, today);
   const target = targetOf(r);
+  const strip = useRef<ComponentRef<typeof ScrollView>>(null);
   const parts = [t(`routines.hits.${r.scope}`, { hits: rv.hits })];
   if (rv.run >= 2) parts.push(t('routines.inRow', { count: rv.run }));
   parts.push(t('routines.xpInfo', { xp: ROUT_XP[r.scope], bonus: ROUT_BONUS[r.scope] }));
@@ -135,7 +145,14 @@ function Lookback({ routine: r, onEdit, onDelete }: { routine: Routine; onEdit: 
       <T v="eyebrow" muted>
         {t('routines.lookbackTitle')}
       </T>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6 }}>
+      {/* Oldest on the left, the latest period on the right, visible without swiping. */}
+      <ScrollView
+        ref={strip}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        onContentSizeChange={() => strip.current?.scrollToEnd({ animated: false })}
+        contentContainerStyle={{ gap: 6, flexGrow: 1, justifyContent: 'flex-end' }}
+      >
         {rv.entries.map((e) => (
           <View key={e.day} style={{ minWidth: 62, paddingVertical: 6, paddingHorizontal: 8, borderRadius: 10, backgroundColor: e.hit ? c.goSoft : c.surface2, gap: 2 }}>
             <T v="tiny" style={{ fontSize: 12 }}>
@@ -203,18 +220,26 @@ export function GoalCard({ editable }: { editable?: boolean }) {
 
 const SLOT_ICON: Record<SlotGroupKey, IconName> = { morning: 'sunrise', midday: 'sun', evening: 'moon', any: 'clock' };
 
+const entryKey = (e: RoutineEntry) => (isSplit(e.routine) && e.slot ? e.routine.id + '|' + e.slot : e.routine.id);
+
+/** A whole routine is done when its period target is met; a time-of-day part when its share is. */
+function entryDone(e: RoutineEntry, stats: Stats, day: Day | undefined, today: DayKey) {
+  const part = e.slot && isSplit(e.routine) ? slotParts(e.routine, day).find((p) => p.slot === e.slot) : undefined;
+  return part ? part.done >= part.share : periodCount(stats, e.routine, today) >= targetOf(e.routine);
+}
+
 /** Routines grouped by time of day; a flat list when no routine has a time of day. */
 export function RoutineGroups({ list, mini }: { list: Routine[]; mini?: boolean }) {
   const { t } = useTranslation();
   const { c } = useTheme();
-  const { stats, today } = useStore();
+  const { data, stats, today } = useStore();
   const groups = groupBySlot(list);
   const now = slotAt(hourNow());
   if (groups.length === 1 && groups[0].key === 'any') {
     return (
       <View style={{ gap: 10 }}>
-        {groups[0].items.map((r) => (
-          <RoutineCard key={r.id} routine={r} mini={mini} />
+        {groups[0].items.map((e) => (
+          <RoutineCard key={entryKey(e)} routine={e.routine} slot={e.slot} mini={mini} />
         ))}
       </View>
     );
@@ -222,7 +247,7 @@ export function RoutineGroups({ list, mini }: { list: Routine[]; mini?: boolean 
   return (
     <View style={{ gap: 14 }}>
       {groups.map((g) => {
-        const met = g.items.filter((r) => periodCount(stats, r, today) >= targetOf(r)).length;
+        const met = g.items.filter((e) => entryDone(e, stats, data.days[today], today)).length;
         const isNow = g.key === now;
         return (
           <View key={g.key} style={{ gap: 8 }}>
@@ -243,8 +268,8 @@ export function RoutineGroups({ list, mini }: { list: Routine[]; mini?: boolean 
                 {met}/{g.items.length}
               </T>
             </View>
-            {g.items.map((r) => (
-              <RoutineCard key={r.id} routine={r} mini={mini} />
+            {g.items.map((e) => (
+              <RoutineCard key={entryKey(e)} routine={e.routine} slot={e.slot} mini={mini} />
             ))}
           </View>
         );

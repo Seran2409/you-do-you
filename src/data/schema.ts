@@ -1,6 +1,7 @@
 import { deviceTimeZone } from '../game/dates';
+import { ROUTINE_SLOTS, slotsOf } from '../game/routines';
 import { DEFAULT_GOAL, DEFAULT_MEDITATION, DEFAULT_MINDFUL_GOAL } from '../game/rules';
-import type { AppData, BreathPattern, Day, Diff, Routine, RoutineScope, Scope, Session, Settings, Sub, Todo } from '../game/types';
+import type { AppData, BreathPattern, Day, Diff, Routine, RoutineScope, RoutineSlot, Scope, Session, Settings, Sub, Todo } from '../game/types';
 
 export const EXPORT_VERSION = 1;
 
@@ -131,7 +132,8 @@ function normRoutine(id: string, raw: unknown): Routine | null {
     createdAt: str(raw.createdAt, new Date(0).toISOString()),
     order: Number(raw.order) || 0,
   };
-  if (raw.slot === 'morning' || raw.slot === 'midday' || raw.slot === 'evening') r.slot = raw.slot;
+  const slots = slotsOf({ slots: Array.isArray(raw.slots) ? (raw.slots as RoutineSlot[]) : undefined, slot: raw.slot as RoutineSlot | undefined });
+  if (slots.length) r.slots = slots;
   if (raw.archived === true) r.archived = true;
   return r;
 }
@@ -147,7 +149,14 @@ function normDay(key: string, raw: unknown): Day | null {
       if (c > 0) routines[rid] = c;
     }
   }
-  return { date, routines };
+  const slotLog: Record<string, RoutineSlot[]> = {};
+  if (isObj(raw.slotLog)) {
+    for (const [rid, log] of Object.entries(raw.slotLog)) {
+      const valid = Array.isArray(log) ? log.filter((s): s is RoutineSlot => ROUTINE_SLOTS.includes(s as RoutineSlot)) : [];
+      if (valid.length && routines[rid]) slotLog[rid] = valid;
+    }
+  }
+  return Object.keys(slotLog).length ? { date, routines, slotLog } : { date, routines };
 }
 
 function normCollection<T>(raw: unknown, fn: (id: string, v: unknown) => T | null): Record<string, T> {
