@@ -287,7 +287,10 @@
     },
     "overallTitle": "Done overall",
     "overallSum": "{{met}} of {{total}}",
-    "todayOf": "{{count}} of {{target}} today"
+    "todayOf": "{{count}} of {{target}} today",
+    "catchUp": "Log {{title}} for yesterday",
+    "catchUpUndo": "Take back {{title}} for yesterday",
+    "catchUpHint": "Forgot yesterday? Tap the day on the far right to log it."
   },
   "routineForm": {
     "newTitle": "New routine",

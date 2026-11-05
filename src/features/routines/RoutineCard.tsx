@@ -133,8 +133,10 @@ export function RoutineCard({ routine: r, slot, mini }: { routine: Routine; slot
 function Lookback({ routine: r, onEdit, onDelete }: { routine: Routine; onEdit: () => void; onDelete: () => void }) {
   const { t } = useTranslation();
   const { c } = useTheme();
-  const { stats, today } = useStore();
+  const { stats, today, actions } = useStore();
   const rv = routineReview(stats, r, today);
+  // Daily routines: the last day of the strip is yesterday and can still be caught up.
+  const canCatchUp = r.scope === 'tag';
   const target = targetOf(r);
   const strip = useRef<ComponentRef<typeof ScrollView>>(null);
   const parts = [t(`routines.hits.${r.scope}`, { hits: rv.hits })];
@@ -153,17 +155,47 @@ function Lookback({ routine: r, onEdit, onDelete }: { routine: Routine; onEdit: 
         onContentSizeChange={() => strip.current?.scrollToEnd({ animated: false })}
         contentContainerStyle={{ gap: 6, flexGrow: 1, justifyContent: 'flex-end' }}
       >
-        {rv.entries.map((e) => (
-          <View key={e.day} style={{ minWidth: 62, paddingVertical: 6, paddingHorizontal: 8, borderRadius: 10, backgroundColor: e.hit ? c.goSoft : c.surface2, gap: 2 }}>
-            <T v="tiny" style={{ fontSize: 12 }}>
-              {shortPeriod(r.scope, e.day)}
-            </T>
-            <T v="monoBold" color={e.hit ? c.go : c.ink}>
-              {e.count}/{target}
-            </T>
-          </View>
-        ))}
+        {rv.entries.map((e, i) => {
+          const box = { minWidth: 62, paddingVertical: 6, paddingHorizontal: 8, borderRadius: 10, backgroundColor: e.hit ? c.goSoft : c.surface2, gap: 2 };
+          const body = (
+            <>
+              <T v="tiny" style={{ fontSize: 12 }}>
+                {shortPeriod(r.scope, e.day)}
+              </T>
+              <T v="monoBold" color={e.hit ? c.go : c.ink}>
+                {e.count}/{target}
+              </T>
+            </>
+          );
+          if (!canCatchUp || i < rv.entries.length - 1) {
+            return (
+              <View key={e.day} style={box}>
+                {body}
+              </View>
+            );
+          }
+          return (
+            <PressScale
+              key={e.day}
+              scaleTo={0.92}
+              onPress={() => actions.adjustRoutineDay(r.id, e.day, e.hit ? -1 : 1)}
+              accessibilityRole="button"
+              accessibilityLabel={t(e.hit ? 'routines.catchUpUndo' : 'routines.catchUp', { title: r.title })}
+              style={[box, { flexDirection: 'row', alignItems: 'center', gap: 8, borderWidth: 1.5, borderColor: e.hit ? c.go : c.accent }]}
+            >
+              <View style={{ gap: 2 }}>{body}</View>
+              <View style={{ width: 22, height: 22, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: e.hit ? c.go : c.accent }}>
+                <Icon name={e.hit ? 'check' : 'plus'} size={13} color={e.hit ? c.onGo : c.onAccent} strokeWidth={3} />
+              </View>
+            </PressScale>
+          );
+        })}
       </ScrollView>
+      {canCatchUp ? (
+        <T v="tiny" muted>
+          {t('routines.catchUpHint')}
+        </T>
+      ) : null}
       <T v="small" muted>
         {parts.join(SEP)}
       </T>

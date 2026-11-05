@@ -287,7 +287,10 @@
     },
     "overallTitle": "Insgesamt geschafft",
     "overallSum": "{{met}} von {{total}}",
-    "todayOf": "heute {{count}} von {{target}}"
+    "todayOf": "heute {{count}} von {{target}}",
+    "catchUp": "{{title}} für gestern nachtragen",
+    "catchUpUndo": "{{title}} für gestern zurücknehmen",
+    "catchUpHint": "Gestern vergessen? Tippe auf den Tag ganz rechts, um es nachzutragen."
   },
   "routineForm": {
     "newTitle": "Neue Routine",

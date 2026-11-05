@@ -3,21 +3,24 @@ import { View } from 'react-native';
 import { useStore } from '../../data/AppStore';
 import { daysLeft } from '../../game/dates';
 import { ROUTINE_SCOPES } from '../../game/rules';
-import { activeRoutines, openRoutineCount, periodCount, scopeSummary, targetOf } from '../../game/routines';
+import { activeRoutines, periodCount, scopeSummary, targetOf } from '../../game/routines';
 import type { Routine, RoutineScope } from '../../game/types';
 import { SEP } from '../../i18n/format';
 import { useTheme } from '../../theme/ThemeProvider';
 import { fonts } from '../../theme/tokens';
 import { useSheet } from '../../ui/overlays';
-import { Card, Chip, Empty, PressScale, ProgressBar, Segmented, TintCard } from '../../ui/primitives';
+import { Card, Chip, Empty, PressScale, ProgressBar, TintCard } from '../../ui/primitives';
 import { T } from '../../ui/Text';
 import { useUi } from '../../ui/uiState';
 import { Screen } from '../shell/Shell';
 import { GoalCard, RoutineGroups } from './RoutineCard';
 import { RoutineForm, SUGGESTIONS } from './RoutineForm';
 
-/** All rhythms at a glance: routines met in their current day, week, month and year. Tapping one opens its tab. */
-function OverallCard({ all, onPick }: { all: Routine[]; onPick: (scope: RoutineScope) => void }) {
+/**
+ * Tabs for day, week, month and year that double as the overview: each shows how many routines are met in
+ * its current period. Above them the total across all rhythms.
+ */
+function ScopeTabs({ all, scope, onPick }: { all: Routine[]; scope: RoutineScope; onPick: (scope: RoutineScope) => void }) {
   const { t } = useTranslation();
   const { c } = useTheme();
   const { stats, today } = useStore();
@@ -27,30 +30,44 @@ function OverallCard({ all, onPick }: { all: Routine[]; onPick: (scope: RoutineS
   });
   const total = rows.reduce((a, r) => a + r.total, 0);
   const met = rows.reduce((a, r) => a + r.met, 0);
-  if (!total) return null;
   return (
     <Card pad={12} style={{ gap: 10 }}>
-      <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', gap: 8, paddingHorizontal: 2 }}>
-        <T v="bold">{t('routines.overallTitle')}</T>
-        <T v="smallBold" muted>
-          {t('routines.overallSum', { met, total })}
-        </T>
-      </View>
-      <View style={{ flexDirection: 'row', gap: 6 }}>
+      {total ? (
+        <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', gap: 8, paddingHorizontal: 2 }}>
+          <T v="bold">{t('routines.overallTitle')}</T>
+          <T v="smallBold" muted>
+            {t('routines.overallSum', { met, total })}
+          </T>
+        </View>
+      ) : null}
+      <View accessibilityRole="tablist" accessibilityLabel={t('routines.pickScope')} style={{ flexDirection: 'row', gap: 6 }}>
         {rows.map((r) => {
+          const on = r.k === scope;
           const full = r.total > 0 && r.met === r.total;
           return (
             <PressScale
               key={r.k}
               onPress={() => onPick(r.k)}
-              accessibilityRole="button"
-              accessibilityLabel={`${t(`routines.scope.${r.k}`)}: ${t('routines.overallSum', { met: r.met, total: r.total })}`}
-              style={{ flex: 1, minWidth: 0, gap: 6, paddingVertical: 9, paddingHorizontal: 10, borderRadius: 12, backgroundColor: full ? c.goSoft : c.surface2 }}
+              accessibilityRole="tab"
+              aria-selected={on}
+              accessibilityLabel={`${t(`routines.scope.${r.k}`)}, ${t('routines.overallSum', { met: r.met, total: r.total })}`}
+              style={{
+                flex: 1,
+                minWidth: 0,
+                gap: 6,
+                paddingVertical: 9,
+                paddingHorizontal: 10,
+                borderRadius: 12,
+                borderWidth: 1.5,
+                borderColor: on ? (full ? c.go : c.accent) : 'transparent',
+                backgroundColor: on ? c.surface : full ? c.goSoft : c.surface2,
+                boxShadow: on ? c.shadow : undefined,
+              }}
             >
-              <T v="tiny" muted numberOfLines={1} style={{ fontFamily: fonts.bodyBold }}>
+              <T v="tiny" numberOfLines={1} color={on ? c.ink : c.muted} style={{ fontFamily: fonts.bodyBold }}>
                 {t(`routines.scope.${r.k}`)}
               </T>
-              <T v="monoBold" color={full ? c.go : c.ink} style={{ fontSize: 16, lineHeight: 20 }}>
+              <T v="monoBold" color={full ? c.go : on ? c.ink : c.muted} style={{ fontSize: 16, lineHeight: 20 }}>
                 {r.total ? `${r.met}/${r.total}` : '–'}
               </T>
               <ProgressBar small pct={r.total ? (r.met / r.total) * 100 : 0} color={full ? c.go : undefined} />
@@ -83,13 +100,7 @@ export default function RoutinesScreen() {
         <T v="h1" accessibilityRole="header">
           {t('routines.title')}
         </T>
-        <OverallCard all={all} onPick={(k) => ui.set({ routScope: k })} />
-        <Segmented
-          label={t('routines.pickScope')}
-          value={scope}
-          onChange={(k) => ui.set({ routScope: k })}
-          options={ROUTINE_SCOPES.map((k) => ({ key: k, label: t(`routines.scope.${k}`), count: openRoutineCount(stats, all, k, today) }))}
-        />
+        <ScopeTabs all={all} scope={scope} onPick={(k) => ui.set({ routScope: k })} />
       </View>
       {scope === 'tag' ? <GoalCard editable /> : null}
       {list.length ? (

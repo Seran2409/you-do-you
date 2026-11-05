@@ -57,11 +57,6 @@ export function scopeSummary(st: Stats, list: Routine[], scope: RoutineScope, to
   };
 }
 
-/** Routines still open in their current period, per scope (badge counts on the tabs). */
-export function openRoutineCount(st: Stats, list: Routine[], scope: RoutineScope, today: DayKey): number {
-  return list.filter((r) => r.scope === scope && periodCount(st, r, today) < targetOf(r)).length;
-}
-
 export const ROUTINE_SLOTS: RoutineSlot[] = ['morning', 'midday', 'evening'];
 export type SlotGroupKey = RoutineSlot | 'any';
 

@@ -5,7 +5,7 @@ import { todayKey } from '../game/dates';
 import * as M from '../game/mutations';
 import { isSplit, isToggleOnly, slotParts } from '../game/routines';
 import { DEFAULT_GOAL, DEFAULT_MINDFUL_GOAL, MAX_GOAL } from '../game/rules';
-import type { AppData, Day, Routine, RoutineSlot, Session, Settings, Todo } from '../game/types';
+import type { AppData, Day, DayKey, Routine, RoutineSlot, Session, Settings, Todo } from '../game/types';
 import i18n from '../i18n';
 import { emit } from './feedback';
 import { defaultSettings, emptyAppData, normalizeImport, toExport } from './schema';
@@ -34,6 +34,8 @@ interface Store {
     /** One check-in; `slot` is the time-of-day part tapped for routines spread over several times of day. */
     incRoutine(id: string, slot?: RoutineSlot): void;
     decRoutine(id: string, slot?: RoutineSlot): void;
+    /** Adds (+1) or takes back (-1) a check-in on an earlier day, e.g. one forgotten yesterday. */
+    adjustRoutineDay(id: string, day: DayKey, delta: 1 | -1): void;
     saveRoutine(id: string | null, draft: RoutineDraft): string;
     deleteRoutine(id: string): void;
     saveSettings(patch: Partial<Settings>): void;
@@ -214,6 +216,14 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
           if (!day) return null;
           return { next: { ...d, days: { ...d.days, [t]: day } }, writes: [['days', t, day]] };
         }, false);
+      },
+      adjustRoutineDay(id, day, delta) {
+        commit((d) => {
+          if (!d.routines[id] || day >= todayKey()) return null;
+          const next = delta > 0 ? M.incRoutine(d.days[day], day, id) : M.decRoutine(d.days[day], day, id);
+          if (!next) return null;
+          return { next: { ...d, days: { ...d.days, [day]: next } }, writes: [['days', day, next]] };
+        }, delta > 0);
       },
       saveRoutine(id, draft) {
         const newId = id || M.uid('r');
