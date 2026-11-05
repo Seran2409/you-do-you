@@ -10,6 +10,7 @@ import {
   levelThreshold,
   levelTitleKey,
   listProgress,
+  periodTally,
   periodEnd,
   periodKey,
   periodStart,
@@ -158,6 +159,18 @@ describe('to-dos', () => {
     t = toggleSub(t, 'a', TODAY);
     expect(t.done).toBe(false);
     expect(t.doneOn).toBeNull();
+  });
+
+  it('look back counts a to-do for its own day, even when ticked off a day late', () => {
+    const y = addDays(TODAY, -1);
+    const todos = {
+      a: todo({ id: 'a', scope: 'tag', period: y, done: true, doneOn: TODAY }),
+      b: todo({ id: 'b', scope: 'tag', period: y }),
+      c: todo({ id: 'c', scope: 'tag', period: TODAY, done: true, doneOn: TODAY }),
+      w: todo({ id: 'w', scope: 'woche', period: periodKey('woche', y) }),
+    };
+    expect(periodTally(todos, 'tag', y)).toEqual({ done: 1, total: 2 });
+    expect(periodTally(todos, 'tag', TODAY)).toEqual({ done: 1, total: 1 });
   });
 
   it('list progress is the mean of to-do progress', () => {

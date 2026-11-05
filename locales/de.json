@@ -141,8 +141,6 @@
     "emptyPeriod": "Noch nichts geplant für diesen Zeitraum. Teile große Ziele in Unterpunkte, dann siehst du den Fortschritt wachsen.",
     "newTodo": "To-do anlegen",
     "progressAll": "Alles geschafft",
-    "progressIn": "geschafft in {{list}}",
-    "progressSummary": "{{done}} von {{total}} To-dos erledigt",
     "subsSummary": "{{done}}/{{total}} Unterpunkte",
     "allDoneList": "Alles erledigt in dieser Liste. Gönn dir den Moment.",
     "planned": "Geplant ({{count}})",
@@ -155,7 +153,11 @@
     "options": "Optionen für {{title}}",
     "check": "{{title}} erledigt",
     "fab": "To-do",
-    "fabLabel": "Neues To-do"
+    "fabLabel": "Neues To-do",
+    "overallTitle": "Insgesamt erledigt",
+    "summary": "{{name}}: {{done}} von {{total}} erledigt",
+    "lookback": "Rückblick: {{name}} {{done}} von {{total}} erledigt",
+    "lookbackNone": "Rückblick: {{name}} keine To-dos"
   },
   "todoForm": {
     "newTitle": "Neues To-do",

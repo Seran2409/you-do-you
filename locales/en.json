@@ -141,8 +141,6 @@
     "emptyPeriod": "Nothing planned for this period yet. Split big goals into subtasks and watch the progress grow.",
     "newTodo": "Add to-do",
     "progressAll": "All done",
-    "progressIn": "done in {{list}}",
-    "progressSummary": "{{done}} of {{total}} to-dos done",
     "subsSummary": "{{done}}/{{total}} subtasks",
     "allDoneList": "Everything in this list is done. Enjoy the moment.",
     "planned": "Planned ({{count}})",
@@ -155,7 +153,11 @@
     "options": "Options for {{title}}",
     "check": "{{title}} done",
     "fab": "To-do",
-    "fabLabel": "New to-do"
+    "fabLabel": "New to-do",
+    "overallTitle": "Done overall",
+    "summary": "{{name}}: {{done}} of {{total}} done",
+    "lookback": "Look back: {{name}} {{done}} of {{total}} done",
+    "lookbackNone": "Look back: no to-dos {{name}}"
   },
   "todoForm": {
     "newTitle": "New to-do",

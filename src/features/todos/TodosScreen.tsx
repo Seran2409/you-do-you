@@ -1,15 +1,15 @@
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 import { useStore } from '../../data/AppStore';
-import { daysLeft, periodKey, shiftPeriod } from '../../game/dates';
+import { addDays, daysLeft, periodKey, shiftPeriod } from '../../game/dates';
 import { TODO_TABS } from '../../game/rules';
-import { aktuellLists, listProgress, openInCurrent, periodLists } from '../../game/todos';
+import { aktuellLists, periodLists, periodTally } from '../../game/todos';
 import { periodLabel, SEP } from '../../i18n/format';
 import { useTheme } from '../../theme/ThemeProvider';
 import { fonts } from '../../theme/tokens';
 import { Icon } from '../../ui/Icon';
 import { useSheet } from '../../ui/overlays';
-import { Button, Empty, ProgressBar, Segmented, TintCard } from '../../ui/primitives';
+import { Button, Empty, OverviewTabs, SummaryCard } from '../../ui/primitives';
 import { T } from '../../ui/Text';
 import { useUi } from '../../ui/uiState';
 import { Screen } from '../shell/Shell';
@@ -45,16 +45,24 @@ export default function TodosScreen() {
   const cursor = ui.todoCursor ?? today;
   const openForm = () => sheet.open((cl) => <TodoForm id={null} close={cl} />, t('todoForm.newTitle'));
 
-  const counts: Record<string, number> = {};
-  for (const k of TODO_TABS) counts[k] = k === 'aktuell' ? aktuellLists(data.todos, today).open.length : openInCurrent(data.todos, k, today);
+  // Each tile shows the list as it is today (Now) or in the current week, month and year.
+  const tiles = TODO_TABS.map((k) => {
+    const l = k === 'aktuell' ? aktuellLists(data.todos, today) : periodLists(data.todos, k, periodKey(k, today)!);
+    return { key: k, label: t(`todos.tab.${k}`), done: l.done.length, total: l.open.length + l.done.length };
+  });
 
   const lists = tab === 'aktuell' ? aktuellLists(data.todos, today) : periodLists(data.todos, tab, periodKey(tab, cursor)!);
   const all = [...lists.open, ...lists.done];
   const listName = t(`todos.listName.${tab}`);
   const isCurrent = tab !== 'aktuell' && periodKey(tab, cursor) === periodKey(tab, today);
-  const prog = listProgress(all);
-  const sTot = all.reduce((a, x) => a + x.subs.length, 0);
-  const sDone = all.reduce((a, x) => a + x.subs.filter((s) => s.done).length, 0);
+  const pct = all.length ? (lists.done.length / all.length) * 100 : 0;
+  // Summary like Routines: this list now, and the period before (Now looks back at yesterday's day to-dos).
+  const nowName = tab === 'aktuell' ? listName : isCurrent ? t(`routines.nowName.${tab}`) : periodLabel(tab, cursor, today);
+  const prevScope = tab === 'aktuell' ? 'tag' : tab;
+  const prevDay = tab === 'aktuell' ? addDays(today, -1) : shiftPeriod(tab, cursor, -1);
+  const prev = periodTally(data.todos, prevScope, periodKey(prevScope, prevDay)!);
+  const prevName = tab === 'aktuell' || isCurrent ? t(`routines.prevName.${prevScope}`) : periodLabel(tab, prevDay, today);
+  const lookback = prev.total ? t('todos.lookback', { name: prevName, done: prev.done, total: prev.total }) : t('todos.lookbackNone', { name: prevName });
 
   return (
     <Screen fab={{ label: t('todos.fab'), a11y: t('todos.fabLabel'), onPress: openForm }}>
@@ -62,11 +70,13 @@ export default function TodosScreen() {
         <T v="h1" accessibilityRole="header">
           {t('todos.title')}
         </T>
-        <Segmented
+        <OverviewTabs
+          title={t('todos.overallTitle')}
           label={t('todos.pickList')}
+          sum={(done, total) => t('routines.overallSum', { met: done, total })}
           value={tab}
           onChange={(k) => ui.set({ todoTab: k, todoCursor: null, showDone: false, showPlanned: false })}
-          options={TODO_TABS.map((k) => ({ key: k, label: t(`todos.tab.${k}`), count: counts[k] }))}
+          tabs={tiles}
         />
         {tab === 'aktuell' ? (
           <T v="small" muted>
@@ -105,24 +115,6 @@ export default function TodosScreen() {
         </Empty>
       ) : (
         <View style={{ gap: 10 }}>
-          <TintCard tint="black">
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
-              <T style={{ fontFamily: fonts.displayHeavy, fontSize: 34, lineHeight: 38, color: c.onBlack }}>
-                {Math.round(prog)}
-                <T style={{ fontFamily: fonts.displayHeavy, fontSize: 18, color: c.onBlack }}>%</T>
-              </T>
-              <View style={{ flex: 1, gap: 7 }}>
-                <T v="bold" color={c.onBlack}>
-                  {prog >= 100 ? t('todos.progressAll') : t('todos.progressIn', { list: listName })}
-                </T>
-                <ProgressBar pct={prog} color={c.onBlack} label={t('todos.progressIn', { list: listName })} />
-                <T v="small" color={c.onBlackMuted}>
-                  {t('todos.progressSummary', { done: lists.done.length, total: all.length })}
-                  {sTot ? SEP + t('todos.subsSummary', { done: sDone, total: sTot }) : ''}
-                </T>
-              </View>
-            </View>
-          </TintCard>
           {lists.open.map((x) => (
             <TodoCard key={x.id} todo={x} />
           ))}
@@ -145,6 +137,14 @@ export default function TodosScreen() {
           <Collapser label={t('todos.done', { count: lists.done.length })} open={ui.showDone} onToggle={() => ui.set({ showDone: !ui.showDone })} />
           {ui.showDone ? lists.done.map((x) => <TodoCard key={x.id} todo={x} />) : null}
         </View>
+      ) : null}
+      {/* Like Routines: the summary and the look back come after the list. */}
+      {all.length ? (
+        <SummaryCard
+          pct={pct}
+          title={lists.done.length === all.length ? t('todos.progressAll') : t('todos.summary', { name: nowName, done: lists.done.length, total: all.length })}
+          sub={lookback}
+        />
       ) : null}
     </Screen>
   );

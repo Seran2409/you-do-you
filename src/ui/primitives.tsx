@@ -275,6 +275,110 @@ export function ProgressBar({ pct, small, color, label }: { pct: number; small?:
 }
 
 /** Segmented routine progress (2/3). */
+export interface OverviewTab<K extends string> {
+  key: K;
+  label: string;
+  done: number;
+  total: number;
+}
+
+/**
+ * Tabs that double as an overview (Routines and To-dos): each tile shows done/total of its current
+ * period with a bar, the selected one is outlined; the sum across all tiles sits above.
+ */
+export function OverviewTabs<K extends string>({
+  title,
+  label,
+  sum,
+  tabs,
+  value,
+  onChange,
+}: {
+  title: string;
+  /** Accessible name of the tab list. */
+  label: string;
+  /** "3 von 8" */
+  sum: (done: number, total: number) => string;
+  tabs: OverviewTab<K>[];
+  value: K;
+  onChange: (key: K) => void;
+}) {
+  const { c } = useTheme();
+  const done = tabs.reduce((a, x) => a + x.done, 0);
+  const total = tabs.reduce((a, x) => a + x.total, 0);
+  return (
+    <Card pad={12} style={{ gap: 10 }}>
+      {total ? (
+        <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', gap: 8, paddingHorizontal: 2 }}>
+          <T v="bold">{title}</T>
+          <T v="smallBold" muted>
+            {sum(done, total)}
+          </T>
+        </View>
+      ) : null}
+      <View accessibilityRole="tablist" accessibilityLabel={label} style={{ flexDirection: 'row', gap: 6 }}>
+        {tabs.map((x) => {
+          const on = x.key === value;
+          const full = x.total > 0 && x.done === x.total;
+          return (
+            <PressScale
+              key={x.key}
+              onPress={() => onChange(x.key)}
+              accessibilityRole="tab"
+              aria-selected={on}
+              accessibilityLabel={`${x.label}, ${sum(x.done, x.total)}`}
+              style={{
+                flex: 1,
+                minWidth: 0,
+                gap: 6,
+                paddingVertical: 9,
+                paddingHorizontal: 10,
+                borderRadius: 12,
+                borderWidth: 1.5,
+                borderColor: on ? (full ? c.go : c.accent) : 'transparent',
+                backgroundColor: on ? c.surface : full ? c.goSoft : c.surface2,
+                boxShadow: on ? c.shadow : undefined,
+              }}
+            >
+              <T v="tiny" numberOfLines={1} color={on ? c.ink : c.muted} style={{ fontFamily: fonts.bodyBold }}>
+                {x.label}
+              </T>
+              <T v="monoBold" color={full ? c.go : on ? c.ink : c.muted} style={{ fontSize: 16, lineHeight: 20 }}>
+                {x.total ? `${x.done}/${x.total}` : '–'}
+              </T>
+              <ProgressBar small pct={x.total ? (x.done / x.total) * 100 : 0} color={full ? c.go : undefined} />
+            </PressScale>
+          );
+        })}
+      </View>
+    </Card>
+  );
+}
+
+/** Dark summary card under a list: big percentage, headline, bar and the look back. */
+export function SummaryCard({ pct, title, sub }: { pct: number; title: string; sub: string }) {
+  const { c } = useTheme();
+  return (
+    <TintCard tint="black">
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
+        <T style={{ fontFamily: fonts.displayHeavy, fontSize: 34, lineHeight: 38, color: c.onBlack }}>
+          {Math.round(pct)}
+          <T style={{ fontFamily: fonts.displayHeavy, fontSize: 18, color: c.onBlack }}>%</T>
+        </T>
+        <View style={{ flex: 1, gap: 7 }}>
+          <T v="bold" color={c.onBlack}>
+            {title}
+          </T>
+          <ProgressBar pct={pct} color={c.onBlack} label={title} />
+          <T v="small" color={c.onBlackMuted}>
+            {sub}
+          </T>
+        </View>
+      </View>
+    </TintCard>
+  );
+}
+
 export function SegBar({ target, count, met }: { target: number; count: number; met: boolean }) {
   const { c } = useTheme();
   if (target > 14) return <ProgressBar pct={(count / target) * 100} small color={met ? c.go : undefined} />;

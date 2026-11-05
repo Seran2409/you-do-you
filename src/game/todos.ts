@@ -1,6 +1,6 @@
 import { periodKey } from './dates';
 import { DIFF_MULT, TODO_XP } from './rules';
-import type { DayKey, PeriodScope, Todo } from './types';
+import type { DayKey, PeriodScope, Scope, Todo } from './types';
 
 export function todoXp(t: Pick<Todo, 'scope' | 'diff'>): number {
   return Math.round((TODO_XP[t.scope] ?? 10) * (DIFF_MULT[t.diff] ?? 1));
@@ -70,6 +70,15 @@ export function periodLists(todos: Record<string, Todo>, scope: PeriodScope, key
     planned: [],
     done: all.filter((t) => t.done).sort(byDoneOnDesc),
   };
+}
+
+/**
+ * To-dos planned for one day, week, month or year: how many are done out of all. Counted by the period they
+ * belong to, so one ticked off a day late still counts for its own day.
+ */
+export function periodTally(todos: Record<string, Todo>, scope: Exclude<Scope, 'ewig'>, key: string): { done: number; total: number } {
+  const list = activeTodos(todos).filter((t) => t.scope === scope && t.period === key);
+  return { done: list.filter((t) => t.done).length, total: list.length };
 }
 
 /** Open to-dos in the current week/month/year. */
