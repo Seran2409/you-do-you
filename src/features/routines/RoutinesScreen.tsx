@@ -104,7 +104,9 @@ export default function RoutinesScreen() {
       </View>
       {scope === 'tag' ? <GoalCard editable /> : null}
       {list.length ? (
-        <View style={{ gap: 10 }}>
+        <View style={{ gap: 14 }}>
+          <RoutineGroups list={list} />
+          {/* Today and the look back come after the list, so the routines themselves are first. */}
           <TintCard tint="black">
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
               <T style={{ fontFamily: fonts.displayHeavy, fontSize: 34, lineHeight: 38, color: c.onBlack }}>
@@ -123,7 +125,6 @@ export default function RoutinesScreen() {
               </View>
             </View>
           </TintCard>
-          <RoutineGroups list={list} />
         </View>
       ) : (
         <Empty title={t(`routines.empty.${scope}`)} text={t('routines.emptyText')}>
